@@ -12,7 +12,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import org.firstinspires.ftc.teamcode.Environment;
 
-@Autonomous(name="IMU Robot Movement", group="Robot")
+/**
+ *    Concept for using IMU sensor for turning
+ */
+@Autonomous()
 public class IMURobotMovement extends LinearOpMode {
     private DcMotor         frontLeftDrive   = null;
     private DcMotor         frontRightDrive  = null;

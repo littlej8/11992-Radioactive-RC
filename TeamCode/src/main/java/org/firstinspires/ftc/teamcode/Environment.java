@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+/**
+ *    Concept for autonomous structure
+ */
 public class Environment {
     static final double MOVE_UP 24.0;
     static final double MOVE_BACK 18.0;
