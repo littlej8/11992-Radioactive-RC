@@ -13,7 +13,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     public MainAutonomous(double move_up, double move_back, double park_move) {
         MOVE_UP = move_up;
         MOVE_BACK = move_back;
-        PARK_MOVE = park_move
+        PARK_MOVE = park_move;
     }
 
     public void runOpMode() {

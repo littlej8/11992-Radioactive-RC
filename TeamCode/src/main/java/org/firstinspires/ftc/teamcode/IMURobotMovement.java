@@ -20,7 +20,7 @@ public class IMURobotMovement extends LinearOpMode {
     private DcMotor         frontLeftDrive   = null;
     private DcMotor         frontRightDrive  = null;
     private DcMotor         backLeftDrive = null;
-    private DcMotor         backRightDrive = null
+    private DcMotor         backRightDrive = null;
     private IMU             imu         = null;      // Control/Expansion Hub IMU
 
     private double          headingError  = 0;
@@ -87,13 +87,13 @@ public class IMURobotMovement extends LinearOpMode {
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         imu.resetYaw();
 
-        driveStraight(DRIVE_SPEED, env.MOVE_UP, 0.0);
+        driveStraight(DRIVE_SPEED, Environment.MOVE_UP, 0.0);
         turnToHeading(TURN_SPEED, 90.0);
 
         sleep(1000);
-        turnToHeading(TURN_SPEED, 0.0)
+        turnToHeading(TURN_SPEED, 0.0);
 
-        driveStraight(DRIVE_SPEED, env.MOVE_BACK, 0.0);
+        driveStraight(DRIVE_SPEED, Environment.MOVE_BACK, 0.0);
 
         sleep(1000);
     }
@@ -151,7 +151,7 @@ public class IMURobotMovement extends LinearOpMode {
 
             moveRobot(0, turnSpeed);
 
-            sendTelemetry(false;)
+            sendTelemetry(false);
         }
 
         moveRobot(0, 0);
@@ -188,19 +188,23 @@ public class IMURobotMovement extends LinearOpMode {
         driveSpeed = drive;
         turnSpeed = turn;
 
-        leftSpeed = drive - turn;
-        rightSpeed = drive + turn;
+        frontLeftSpeed = drive - turn;
+        frontRightSpeed = drive + turn;
+        backLeftSpeed = drive - turn;
+        backRightSpeed = drive + turn;
 
-        double max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+        double max = Math.max(Math.abs(frontLeftSpeed), Math.abs(frontRightSpeed));
         if (max > 1.0) {
-            leftSpeed /= max;
-            rightSpeed /= max;
+            frontLeftSpeed /= max;
+            frontRightSpeed /= max;
+            backLeftSpeed /= max;
+            backRightSpeed /= max;
         }
 
-        frontLeftDrive.setPower(leftSpeed);
-        frontRightDrive.setPower(rightSpeed);
-        backLeftDrive.setPower(leftSpeed);
-        backRightDrive.setPower(rightSpeed);
+        frontLeftDrive.setPower(frontLeftSpeed);
+        frontRightDrive.setPower(frontRightSpeed);
+        backLeftDrive.setPower(backLeftSpeed);
+        backRightDrive.setPower(backRightSpeed);
     }
 
     private void sendTelemetry(boolean straight) {
