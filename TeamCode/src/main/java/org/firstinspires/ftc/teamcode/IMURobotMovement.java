@@ -10,7 +10,9 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-@Autonomous(name="Robot: Auto Drive By Gyro", group="Robot")
+import org.firstinspires.ftc.teamcode.env;
+
+@Autonomous(name="IMU Robot Movement", group="Robot")
 public class IMURobotMovement extends LinearOpMode {
     private DcMotor         frontLeftDrive   = null;
     private DcMotor         frontRightDrive  = null;
@@ -82,9 +84,13 @@ public class IMURobotMovement extends LinearOpMode {
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         imu.resetYaw();
 
-        driveStraight(DRIVE_SPEED, 12.0, 0.0);
+        driveStraight(DRIVE_SPEED, env.MOVE_UP, 0.0);
         turnToHeading(TURN_SPEED, 90.0);
-        driveStraight(DRIVE_SPEED, 12.0, 90.0);
+
+        sleep(1000);
+        turnToHeading(TURN_SPEED, 0.0)
+
+        driveStraight(DRIVE_SPEED, env.MOVE_BACK, 0.0);
 
         sleep(1000);
     }
