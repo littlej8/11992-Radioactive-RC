@@ -87,7 +87,45 @@ public class IMURobotMovement extends LinearOpMode {
 
     public void driveStraight(double maxDriveSpeed, double distance, double heading) {
         if (opModeIsActive()) {
-            
+            int moveCounts = (int)(distance * COUNTS_PER_INCH);
+            frontLeftTarget = frontLeftDrive.getCurrentPosition() + moveCounts;
+            frontRightTarget = frontRightDrive.getCurrentPosition() + moveCounts;
+            backLeftTarget = backLeftDrive.getCurrentPosition() + moveCounts;
+            backRightTarget = backRightDrive.getCurrentPosition() + moveCounts;
+
+            frontLeftDrive.setTargetPosition(frontLeftTarget);
+            frontRightDrive.setTargetPosition(frontRightTarget);
+            backLeftDrive.setTargetPosition(backLeftTarget);
+            backRightDrive.setTargetPosition(backRightTarget);
+
+            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            maxDriveSpeed = Math.abs(maxDriveSpeed);
+            moveRobot(maxDriveSpeed, 0);
+
+            while (opModeIsActive() && (
+                    frontLeftDrive.isBusy() ||
+                    frontRightDrive.isBusy() ||
+                    backLeftDrive.isBusy() ||
+                    backRightDrive.isBusy())) {
+                turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
+                
+                if (distance < 0)
+                    turnSpeed *= -1.0;
+                
+                moveRobot(driveSpeed, turnSpeed);
+
+                sendTelemetry(true);
+            }
+
+            moveRobot(0, 0);
+            frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
