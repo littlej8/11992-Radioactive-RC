@@ -117,9 +117,9 @@ public class IMURobotMovement extends LinearOpMode {
             moveRobot(maxDriveSpeed, 0);
 
             while (opModeIsActive() && (
-                    frontLeftDrive.isBusy() ||
-                    frontRightDrive.isBusy() ||
-                    backLeftDrive.isBusy() ||
+                    frontLeftDrive.isBusy() &&
+                    frontRightDrive.isBusy() &&
+                    backLeftDrive.isBusy() &&
                     backRightDrive.isBusy())) {
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
                 
