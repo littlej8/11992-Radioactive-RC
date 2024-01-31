@@ -82,6 +82,10 @@ public class IMURobotMovement extends LinearOpMode {
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         imu.resetYaw();
 
+        driveStraight(DRIVE_SPEED, 12.0, 0.0);
+        turnToHeading(TURN_SPEED, 90.0);
+        driveStraight(DRIVE_SPEED, 12.0, 90.0);
+
         sleep(1000);
     }
 
