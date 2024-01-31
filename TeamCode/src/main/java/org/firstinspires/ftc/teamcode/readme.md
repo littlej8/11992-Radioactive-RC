@@ -1,3 +1,7 @@
+## Notes
+
+[Learn Java For FTC](https://github.com/alan412/LearnJavaForFTC/blob/master/LearnJavaForFTC.pdf)
+
 ## TeamCode Module
 
 Welcome!

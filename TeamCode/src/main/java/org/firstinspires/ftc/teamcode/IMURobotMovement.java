@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-import org.firstinspires.ftc.teamcode.env;
+import org.firstinspires.ftc.teamcode.Environment;
 
 @Autonomous(name="IMU Robot Movement", group="Robot")
 public class IMURobotMovement extends LinearOpMode {

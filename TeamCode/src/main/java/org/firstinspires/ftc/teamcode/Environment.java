@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-public class env {
+public class Environment {
     static final double MOVE_UP 24.0;
     static final double MOVE_BACK 18.0;
     static final double PARK_CORNER_CLOSE 48.0;
