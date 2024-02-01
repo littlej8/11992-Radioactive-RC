@@ -9,9 +9,9 @@ import org.firstinspires.ftc.teamcode.Environment;
 /**
  *    Concept for autonomous structure
  */
-@Autonomous()
+@Autonomous
 public class AutonomousRedRightCorner extends MainAutonomous {
     public void on_init() {
-        super.set_vars(Environment.Auto.MOVE_UP, Environment.Auto.MOVE_BACK, Environment.Auto.PARK_CORNER_CLOSE);
+        super.init_vars(Environment.Auto.MOVE_UP, Environment.Auto.MOVE_BACK, Environment.Auto.PARK_CORNER_CLOSE);
     }
 }

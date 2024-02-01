@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
-public class MainTeleOp extends OpMode {
+public class MainTeleOp extends LinearOpMode {
     private DcMotor FrontLeft;
     private DcMotor FrontRight;
     private DcMotor BackLeft;
@@ -22,6 +22,16 @@ public class MainTeleOp extends OpMode {
     private Servo DroneLauncher;
 
     @Override
+    public void runOpMode() throws InterruptedException {
+        init();
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+            loop();
+        }
+    }
+
     public void init() {
         FrontLeft = hardwareMap.get(DcMotor.class, "Frontleft");
         FrontRight = hardwareMap.get(DcMotor.class, "Frontright");
@@ -78,7 +88,6 @@ public class MainTeleOp extends OpMode {
         ClawGrabber.scaleRange(Environment.TeleOp.CLAW_GRABBER_MIN, Environment.TeleOp.CLAW_GRABBER_MAX);
     }
 
-    @Override
     public void loop() {
         UpdateWheels();
         UpdateArm();
@@ -137,7 +146,7 @@ public class MainTeleOp extends OpMode {
     private void UpdateDrone() {
         if (gamepad1.left_bumper && gamepad1.right_bumper && gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
             DroneLauncher.setPosition(1.0);
-            sleep(3000);
+            sleep(1000);
             DroneLauncher.setPosition(0.0);
         }
     }
@@ -180,13 +189,5 @@ public class MainTeleOp extends OpMode {
         FrontRight.setPower(0.0);
         BackLeft.setPower(0.0);
         BackRight.setPower(0.0);
-    }
-
-    private void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch(InterruptedException e) {
-            telemetry.addData("drone timer", "interrupted!");
-        }
     }
 }
