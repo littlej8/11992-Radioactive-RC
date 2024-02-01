@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,6 +11,6 @@ import org.firstinspires.ftc.teamcode.Environment;
 @Autonomous
 public class AutonomousRedRightCorner extends MainAutonomous {
     public void on_init() {
-        super.init_vars(Environment.Auto.MOVE_UP, Environment.Auto.MOVE_BACK, Environment.Auto.PARK_CORNER_CLOSE, null, null);
+        super.init_vars(Environment.Auto.MOVE_UP, Environment.Auto.MOVE_BACK, Environment.Auto.PARK_CORNER_CLOSE, 0.0, 0.0);
     }
 }

@@ -1,21 +1,21 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class PIDController {
-    private double Kp;
-    private double Ki;
-    private double Kd;
+    private final double Kp;
+    private final double Ki;
+    private final double Kd;
 
     private double lastError;
     private double integralSum;
 
-    private ElapsedTime timer;
+    private final ElapsedTime timer;
 
-    public PIDController(double Kp, double Ki, double Kd) {
-        this.Kp = Kp;
-        this.Ki = Ki;
-        this.Kd = Kd;
+    public PIDController(double kp, double ki, double kd) {
+        Kp = kp;
+        Ki = ki;
+        Kd = kd;
 
         timer = new ElapsedTime();
         lastError = 0;

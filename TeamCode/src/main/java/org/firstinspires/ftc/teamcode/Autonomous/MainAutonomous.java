@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -35,7 +35,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         on_init();
 
-        init();
+        initialize();
 
         waitForStart();
     }
@@ -43,12 +43,12 @@ public abstract class MainAutonomous extends LinearOpMode {
     public void init_vars(double move_up, double move_back, double park_move_1, double park_move_2, double park_move_3) {
         MoveUp = move_up;
         MoveBack = move_back;
-        ParkMove1 = park_move;
+        ParkMove1 = park_move_1;
         ParkMove2 = park_move_2;
         ParkMove3 = park_move_3;
     }
 
-    public void init() {
+    public void initialize() {
         FrontLeft = hardwareMap.get(DcMotor.class, "Frontleft");
         FrontRight = hardwareMap.get(DcMotor.class, "Frontleft");
         BackLeft = hardwareMap.get(DcMotor.class, "Frontleft");
@@ -88,10 +88,10 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     public void drive(double fl, double fr, double bl, double br) {
-        double fl_target = FrontLeft.getPosition() + fl;
-        double fr_target = FrontRight.getPosition() + fr;
-        double bl_target = BackLeft.getPosition() + bl;
-        double br_target = BackRight.getPosition() + br;
+        double fl_target = FrontLeft.getCurrentPosition() + fl;
+        double fr_target = FrontRight.getCurrentPosition() + fr;
+        double bl_target = BackLeft.getCurrentPosition() + bl;
+        double br_target = BackRight.getCurrentPosition() + br;
 
         flPID.reset();
         frPID.reset();
@@ -101,10 +101,10 @@ public abstract class MainAutonomous extends LinearOpMode {
         double max_power = Double.POSITIVE_INFINITY;
 
         while (opModeIsActive() && max_power > Environment.Auto.PID_TOLERANCE) {
-            double fl_power = flPID.update(fl_target, FrontLeft.getPosition());
-            double fr_power = frPID.update(fr_target, FrontRight.getPosition());
-            double bl_power = blPID.update(bl_target, BackLeft.getPosition());
-            double br_power = brPID.update(br_target, BackRight.getPosition());
+            double fl_power = flPID.update(fl_target, FrontLeft.getCurrentPosition());
+            double fr_power = frPID.update(fr_target, FrontRight.getCurrentPosition());
+            double bl_power = blPID.update(bl_target, BackLeft.getCurrentPosition());
+            double br_power = brPID.update(br_target, BackRight.getCurrentPosition());
 
             max_power = Math.max(Math.max(fl_power, fr_power), Math.max(bl_power, br_power));
 

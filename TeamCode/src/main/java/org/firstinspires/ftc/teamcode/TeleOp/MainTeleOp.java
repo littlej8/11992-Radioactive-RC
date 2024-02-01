@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -25,16 +25,25 @@ public class MainTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        init();
+        initialize();
 
         waitForStart();
 
         while (opModeIsActive()) {
-            loop();
+            UpdateWheels();
+            UpdateArm();
+            UpdateClaw();
+            UpdateLift();
+
+            if (gamepad2.triangle) {
+                RobotRoutine(); // routine yayyyyy
+            }
+
+            telemetry.update();
         }
     }
 
-    public void init() {
+    public void initialize() {
         FrontLeft = hardwareMap.get(DcMotor.class, "Frontleft");
         FrontRight = hardwareMap.get(DcMotor.class, "Frontright");
         BackLeft = hardwareMap.get(DcMotor.class, "Backleft");
@@ -88,19 +97,6 @@ public class MainTeleOp extends LinearOpMode {
 
         ClawWrist.scaleRange(Environment.TeleOp.CLAW_WRIST_MIN, Environment.TeleOp.CLAW_WRIST_MAX);
         ClawGrabber.scaleRange(Environment.TeleOp.CLAW_GRABBER_MIN, Environment.TeleOp.CLAW_GRABBER_MAX);
-    }
-
-    public void loop() {
-        UpdateWheels();
-        UpdateArm();
-        UpdateClaw();
-        UpdateLift();
-
-        if (gamepad2.triangle) {
-            RobotRoutine(); // routine yayyyyy
-        }
-
-        telemetry.update();
     }
 
     private void UpdateWheels() {
