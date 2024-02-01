@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Environment;
  */
 @Autonomous()
 public class AutonomousRedRightCorner extends MainAutonomous {
-    public AutonomousRedRightCorner() {
-        super(Environment.MOVE_UP, Environment.MOVE_BACK, Environment.PARK_CORNER_CLOSE);
+    public void on_init() {
+        super.set_vars(Environment.Auto.MOVE_UP, Environment.Auto.MOVE_BACK, Environment.Auto.PARK_CORNER_CLOSE);
     }
 }
