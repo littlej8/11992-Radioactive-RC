@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 /**
  *    Concept for autonomous structure
@@ -16,9 +17,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     private Servo ClawWrist;
     private Servo ClawGrabber;
 
-    private double MOVE_UP;
-    private double MOVE_BACK;
-    private double PARK_MOVE;
+    private double Moves;
 
     abstract public void on_init();
 
@@ -35,6 +34,10 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     public void init() {
+
+    }
+
+    public void drive() {
 
     }
 }
