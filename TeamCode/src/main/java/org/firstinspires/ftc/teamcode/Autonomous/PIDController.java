@@ -22,7 +22,7 @@ public class PIDController {
         integralSum = 0;
     }
 
-    public void newMove() {
+    public void reset() {
         lastError = 0;
         integralSum = 0;
 

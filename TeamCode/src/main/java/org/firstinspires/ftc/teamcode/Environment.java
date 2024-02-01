@@ -5,9 +5,12 @@ package org.firstinspires.ftc.teamcode;
  */
 public class Environment {
     public class Auto {
+        static final double WHEEL_POWER = 0.2;
+
         static final double PID_KP = 2.0;
         static final double PID_KI = 0.2;
         static final double PID_KD = 0.3;
+        static final double PID_TOLERANCE = 2.5;
 
         static final double MOVE_UP =  24.0;
         static final double MOVE_BACK =  20.0;
