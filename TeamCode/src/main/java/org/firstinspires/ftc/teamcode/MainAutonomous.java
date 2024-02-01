@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 /**
  *    Concept for autonomous structure
  */
-public abstract class MainAutonomous extends LinearOpMode {
+public abstract class MainAutonomous extends OpMode {
     private final double MOVE_UP;
     private final double MOVE_BACK;
     private final double PARK_MOVE;
@@ -16,7 +16,15 @@ public abstract class MainAutonomous extends LinearOpMode {
         PARK_MOVE = park_move;
     }
 
-    public void runOpMode() {
+    public void init() {
+        
+    }
+
+    public void start() {
+
+    }
+
+    public void loop() {
         
     }
 }
