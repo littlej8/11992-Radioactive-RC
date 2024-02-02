@@ -12,16 +12,42 @@ public class Environment {
         public static final double PID_KD = 0.3;
         public static final double PID_TOLERANCE = 2.5;
 
-        public static final double MOVE_UP =  24.0;
-        public static final double MOVE_BACK =  20.0;
-        public static final double PARK_CORNER_CLOSE =  48.0;
-        public static final double PARK_CORNER_FAR =  84.0;
-        public static final double MIDDLE_PARK_1_CLOSE =  40.0;
-        public static final double MIDDLE_PARK_1_FAR =  76.0;
-        public static final double MIDDLE_PARK_2 =  48.0;
-        public static final double MIDDLE_PARK_3 =  18.0;
+        public static class MovementInches {
+            public static final double MOVE_UP = 25.0;
+            public static final double MOVE_BACK = 23.0;
+            public static final double PARK_CORNER_CLOSE = 48.0;
+            public static final double PARK_CORNER_FAR = 100.0;
+            public static final double MIDDLE_PARK_1_CLOSE = 40.0;
+            public static final double MIDDLE_PARK_1_FAR = 84.0;
+            public static final double MIDDLE_PARK_2 = 48.0;
+            public static final double MIDDLE_PARK_3 = 18.0;
 
-        public static final double deg90 = 440.0;
+            public static final double DEG90 = 38.0;
+        }
+
+        public static class MovementCounts {
+            public static final double MOVE_UP = 290;
+
+            public static final double LEFT_ADJUST = 50;
+            public static final double RIGHT_ADJUST = 75;
+            public static final double FRONT_ADJUST_1 = -165;
+            public static final double FRONT_ADJUST_2 = -50;
+
+            public static final double MOVE_BACK = 300;
+            public static final double MOVE_BACK_STRAFE_RIGHT = 335;
+            public static final double MOVE_BACK_STRAFE_LEFT = 425;
+
+            public static final double PARK_CORNER_CLOSE_STRAIGHT = 400;
+            public static final double PARK_CORNER_FAR_STRAIGHT = 1200;
+            public static final double PARK_CORNER_CLOSE_STRAFE = 500;
+            public static final double PARK_CORNER_FAR_STRAFE = 1600;
+
+            public static final double DEG90 = 440.0;
+        }
+
+        public static final int LIGHT_SENSITIVITY = 30;
+        public static final int LEFT_BOUND = 145;
+        public static final int RIGHT_BOUND = 170;
     }
 
     public static class TeleOp {

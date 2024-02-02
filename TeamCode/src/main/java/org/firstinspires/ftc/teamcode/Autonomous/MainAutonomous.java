@@ -16,13 +16,11 @@ public abstract class MainAutonomous extends LinearOpMode {
     private DcMotor BackLeft;
     private DcMotor BackRight;
 
-    private PIDController flPID;
-    private PIDController frPID;
-    private PIDController blPID;
-    private PIDController brPID;
-
     private Servo ClawWrist;
     private Servo ClawGrabber;
+
+    private ColorSensor LeftSensor;
+    private ColorSensor RightSensor;
 
     private double MoveUp;
     private double MoveBack;
@@ -38,6 +36,12 @@ public abstract class MainAutonomous extends LinearOpMode {
         initialize();
 
         waitForStart();
+
+        String side = check_sensors();
+        if (side == "left") {
+            turn_left();
+            drive_straight();
+        }
     }
 
     public void init_vars(double move_up, double move_back, double park_move_1, double park_move_2, double park_move_3) {
@@ -54,13 +58,16 @@ public abstract class MainAutonomous extends LinearOpMode {
         BackLeft = hardwareMap.get(DcMotor.class, "Frontleft");
         BackRight = hardwareMap.get(DcMotor.class, "Frontleft");
 
-        flPID = new PIDController(Environment.Auto.PID_KP, Environment.Auto.PID_KI, Environment.Auto.PID_KD);
-        frPID = new PIDController(Environment.Auto.PID_KP, Environment.Auto.PID_KI, Environment.Auto.PID_KD);
-        blPID = new PIDController(Environment.Auto.PID_KP, Environment.Auto.PID_KI, Environment.Auto.PID_KD);
-        brPID = new PIDController(Environment.Auto.PID_KP, Environment.Auto.PID_KI, Environment.Auto.PID_KD);
-
         ClawWrist = hardwareMap.get(Servo.class, "ClawX");
         ClawGrabber = hardwareMap.get(Servo.class, "ClawY");
+
+        LeftSensor = hardwareMap.get(ColorSensor.class, "Left Sensor");
+        RightSensor = hardwareMap.get(ColorSensor.class, "Right Sensor");
+
+        FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         FrontLeft.setDirection(DcMotor.Direction.FORWARD);
         FrontRight.setDirection(DcMotor.Direction.FORWARD);
@@ -75,10 +82,10 @@ public abstract class MainAutonomous extends LinearOpMode {
         BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        FrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        FrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         ClawWrist.scaleRange(0.3, 0.75);
         ClawGrabber.scaleRange(0.25, 0.75);
@@ -87,31 +94,98 @@ public abstract class MainAutonomous extends LinearOpMode {
         ClawWrist.setPosition(1.0);
     }
 
+    public String check_sensors() {
+        LeftSensor.Gain = 2;
+        RightSensor.Gain = 2;
+
+        String ret = "front";
+        int left_count = 0;
+        int right_count = 0;
+
+        for (int i = 0; i < 50; i++) {
+            double left_light = LeftSensor.RawLightDetected;
+            double right_light = RightSensor.RawLightDetected;
+
+            if (left_light >= Environment.Auto.LEFT_BOUND) {
+                left_count++;
+            } else {
+                left_count = 0;
+            }
+
+            if (right_light >= Environment.Auto.RIGHT_BOUND) {
+                right_count++;
+            } else {
+                right_count = 0;
+            }
+
+            if (left_count >= Environment.Auto.LIGHT_SENSITIVITY) {
+                ret = "left";
+            } else if (right_count >= Environment.Auto.LIGHT_SENSITIVITY) {
+                ret = "right";
+            }
+        }
+
+        return ret;
+    }
+
+    public void drive_straight(double amount) {
+        drive(amount, amount, amount, amount);
+    }
+
+    public void drive_backwards(double amount) {
+        drive(-amount, -amount, -amount, -amount);
+    }
+
+    public void strafe_right(double amount) {
+        drive(amount, amount, -amount, -amount);
+    }
+
+    public void strafe_left(double amount) {
+        drive(-amount, -amount, amount, amount);
+    }
+
+    public void turn_right() {
+        drive(Environment.Auto.MovementCounts.DEG90, -Environment.MovementCounts.Auto.DEG90, Environment.MovementCounts.Auto.DEG90, -Environment.MovementCounts.Auto.DEG90);
+    }
+
+    public void turn_left() {
+        drive(-Environment.Auto.MovementCounts.DEG90, Environment.MovementCounts.Auto.DEG90, -Environment.MovementCounts.Auto.DEG90, Environment.MovementCounts.Auto.DEG90);
+    }
+
     public void drive(double fl, double fr, double bl, double br) {
         double fl_target = FrontLeft.getCurrentPosition() + fl;
         double fr_target = FrontRight.getCurrentPosition() + fr;
         double bl_target = BackLeft.getCurrentPosition() + bl;
         double br_target = BackRight.getCurrentPosition() + br;
 
-        flPID.reset();
-        frPID.reset();
-        blPID.reset();
-        brPID.reset();
+        FrontLeft.setTargetPosition(fl_target);
+        FrontRight.setTargetPosition(fr_target);
+        BackLeft.setTargetPosition(bl_target);
+        BackRight.setTargetPosition(br_target);
 
-        double max_power = Double.POSITIVE_INFINITY;
+        FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        while (opModeIsActive() && max_power > Environment.Auto.PID_TOLERANCE) {
-            double fl_power = flPID.update(fl_target, FrontLeft.getCurrentPosition());
-            double fr_power = frPID.update(fr_target, FrontRight.getCurrentPosition());
-            double bl_power = blPID.update(bl_target, BackLeft.getCurrentPosition());
-            double br_power = brPID.update(br_target, BackRight.getCurrentPosition());
+        FrontLeft.setPower(Environment.Auto.WHEEL_POWER);
+        FrontRight.setPower(Environment.Auto.WHEEL_POWER);
+        BackLeft.setPower(Environment.Auto.WHEEL_POWER);
+        BackRight.setPower(Environment.Auto.WHEEL_POWER);
 
-            max_power = Math.max(Math.max(fl_power, fr_power), Math.max(bl_power, br_power));
+        telemetry.update();
 
-            FrontLeft.setPower(fl_power);
-            FrontRight.setPower(fr_power);
-            BackLeft.setPower(bl_power);
-            BackRight.setPower(br_power);
+        while (opModeIsActive() && (FrontLeft.isBusy() || FrontRight.isBusy() || BackLeft.isBusy() || BackRight.isBusy())) {
+            idle();
         }
+
+        sleep(50);
+
+        FrontLeft.setPower(0.0);
+        FrontRight.setPower(0.0);
+        BackLeft.setPower(0.0);
+        BackRight.setPower(0.0);
+
+        telemetry.update();
     }
 }
