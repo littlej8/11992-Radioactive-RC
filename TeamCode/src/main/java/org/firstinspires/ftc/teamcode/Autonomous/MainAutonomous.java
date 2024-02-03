@@ -4,6 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import org.firstinspires.ftc.teamcode.Util.Environment;
 
@@ -21,6 +25,8 @@ public abstract class MainAutonomous extends LinearOpMode {
 
     private ColorRangeSensor LeftSensor;
     private ColorRangeSensor RightSensor;
+    
+    private IMU imu;
 
     private double MoveUp;
     private double LeftAdjust;
@@ -44,10 +50,18 @@ public abstract class MainAutonomous extends LinearOpMode {
         initialize();
 
         waitForStart();
-
+        
         drive_straight(MoveUp);
+        
+        sleep(500);
 
         String side = check_sensors();
+        
+        telemetry.addData("side: ", side);
+        telemetry.update();
+        
+        sleep(3000);
+        
         if (side.equals("left")) {
             turn_left();
             sleep(500);
@@ -61,12 +75,17 @@ public abstract class MainAutonomous extends LinearOpMode {
             sleep(500);
             strafe_right(FrontAdjust2);
         }
-
+        
+        sleep(500);
         ClawWrist.setPosition(0.0);
         sleep(500);
         ClawGrabber.setPosition(0.0);
-
         sleep(500);
+        ClawWrist.setPosition(1.0);
+        sleep(500);
+        ClawGrabber.setPosition(1.0);
+        sleep(500);
+        
 
         if (side.equals("left")) {
             strafe_left(MoveBackLeft);
@@ -79,14 +98,12 @@ public abstract class MainAutonomous extends LinearOpMode {
         sleep(500);
 
         if (side.equals("left")) {
-            drive_straight(ParkMove1Straight);
-        } else if (side.equals("right")) {
             drive_backwards(ParkMove1Straight);
+        } else if (side.equals("right")) {
+            drive_straight(ParkMove1Straight);
         } else {
             strafe_right(ParkMove1Strafe);
         }
-
-
     }
 
     public void init_vars(double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe, double park_move_2, double park_move_3) {
@@ -106,15 +123,22 @@ public abstract class MainAutonomous extends LinearOpMode {
 
     public void initialize() {
         FrontLeft = hardwareMap.get(DcMotor.class, "Frontleft");
-        FrontRight = hardwareMap.get(DcMotor.class, "Frontleft");
-        BackLeft = hardwareMap.get(DcMotor.class, "Frontleft");
-        BackRight = hardwareMap.get(DcMotor.class, "Frontleft");
+        FrontRight = hardwareMap.get(DcMotor.class, "Frontright");
+        BackLeft = hardwareMap.get(DcMotor.class, "Backleft");
+        BackRight = hardwareMap.get(DcMotor.class, "Backright");
 
         ClawWrist = hardwareMap.get(Servo.class, "ClawX");
         ClawGrabber = hardwareMap.get(Servo.class, "ClawY");
 
         LeftSensor = hardwareMap.get(ColorRangeSensor.class, "Left Sensor");
         RightSensor = hardwareMap.get(ColorRangeSensor.class, "Right Sensor");
+        
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+
+        imu = hardwareMap.get(IMU.class, "imu");
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -140,9 +164,10 @@ public abstract class MainAutonomous extends LinearOpMode {
         BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         ClawWrist.scaleRange(0.3, 0.75);
-        ClawGrabber.scaleRange(0.25, 0.75);
+        ClawGrabber.scaleRange(0.25, 0.9);
 
         ClawGrabber.setPosition(1.0);
+        sleep(1000);
         ClawWrist.setPosition(1.0);
     }
 
@@ -154,7 +179,7 @@ public abstract class MainAutonomous extends LinearOpMode {
         int left_count = 0;
         int right_count = 0;
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 50 && opModeIsActive(); i++) {
             double left_light = LeftSensor.getRawLightDetected();
             double right_light = RightSensor.getRawLightDetected();
 
@@ -175,6 +200,8 @@ public abstract class MainAutonomous extends LinearOpMode {
             } else if (right_count >= Environment.Auto.LIGHT_SENSITIVITY) {
                 ret = "right";
             }
+            
+            sleep(10);
         }
 
         return ret;
@@ -197,11 +224,61 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     public void turn_right() {
-        drive(Environment.Auto.MovementCounts.DEG90, -Environment.Auto.MovementCounts.DEG90, Environment.Auto.MovementCounts.DEG90, -Environment.Auto.MovementCounts.DEG90);
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        double cur = orientation.getYaw(AngleUnit.DEGREES);
+        double target = cur - 90.0;
+        
+        double error = target - cur;
+        
+        FrontLeft.setPower(Environment.Auto.TURN_POWER);
+        FrontRight.setPower(-Environment.Auto.TURN_POWER);
+        BackLeft.setPower(Environment.Auto.TURN_POWER);
+        BackRight.setPower(-Environment.Auto.TURN_POWER);
+        
+        telemetry.update();
+        
+        while (opModeIsActive() && Math.abs(error) > Environment.Auto.TURN_TOLERANCE) {
+            orientation = imu.getRobotYawPitchRollAngles();
+            cur = orientation.getYaw(AngleUnit.DEGREES);
+            error = target - cur;
+            idle();
+        }
+        
+        FrontLeft.setPower(0.0);
+        FrontRight.setPower(0.0);
+        BackLeft.setPower(0.0);
+        BackRight.setPower(0.0);
+        
+        telemetry.update();
     }
 
     public void turn_left() {
-        drive(-Environment.Auto.MovementCounts.DEG90, Environment.Auto.MovementCounts.DEG90, -Environment.Auto.MovementCounts.DEG90, Environment.Auto.MovementCounts.DEG90);
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        double cur = orientation.getYaw(AngleUnit.DEGREES);
+        double target = cur + 90.0;
+        
+        double error = target - cur;
+        
+        FrontLeft.setPower(-Environment.Auto.TURN_POWER);
+        FrontRight.setPower(Environment.Auto.TURN_POWER);
+        BackLeft.setPower(-Environment.Auto.TURN_POWER);
+        BackRight.setPower(Environment.Auto.TURN_POWER);
+        
+        telemetry.update();
+        
+        while (opModeIsActive() && Math.abs(error) > Environment.Auto.TURN_TOLERANCE) {
+            orientation = imu.getRobotYawPitchRollAngles();
+            cur = orientation.getYaw(AngleUnit.DEGREES);
+            error = target - cur;
+            idle();
+        }
+        
+        FrontLeft.setPower(0.0);
+        FrontRight.setPower(0.0);
+        BackLeft.setPower(0.0);
+        BackRight.setPower(0.0);
+        
+        telemetry.update();
     }
 
     public void drive(double fl, double fr, double bl, double br) {
@@ -227,16 +304,19 @@ public abstract class MainAutonomous extends LinearOpMode {
 
         telemetry.update();
 
-        while (opModeIsActive() && (FrontLeft.isBusy() || FrontRight.isBusy() || BackLeft.isBusy() || BackRight.isBusy())) {
+        while (opModeIsActive() && (FrontLeft.isBusy() && FrontRight.isBusy() && BackLeft.isBusy() && BackRight.isBusy())) {
             idle();
         }
-
-        sleep(50);
 
         FrontLeft.setPower(0.0);
         FrontRight.setPower(0.0);
         BackLeft.setPower(0.0);
         BackRight.setPower(0.0);
+        
+        FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.update();
     }
