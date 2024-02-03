@@ -33,9 +33,9 @@ public class Environment {
             public static final double FRONT_ADJUST_1 = -165;
             public static final double FRONT_ADJUST_2 = -50;
 
-            public static final double MOVE_BACK = 300;
-            public static final double MOVE_BACK_STRAFE_RIGHT = 335;
-            public static final double MOVE_BACK_STRAFE_LEFT = 425;
+            public static final double MOVE_BACK_STRAIGHT = 300;
+            public static final double MOVE_BACK_RIGHT = 335;
+            public static final double MOVE_BACK_LEFT = 425;
 
             public static final double PARK_CORNER_CLOSE_STRAIGHT = 400;
             public static final double PARK_CORNER_FAR_STRAIGHT = 1200;

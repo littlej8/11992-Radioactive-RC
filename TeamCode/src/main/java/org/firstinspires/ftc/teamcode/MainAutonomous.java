@@ -3,7 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import com.qualcomm.robotcore.hardware.LightSensor;
 
 import org.firstinspires.ftc.teamcode.Environment;
 
@@ -19,17 +20,25 @@ public abstract class MainAutonomous extends LinearOpMode {
     private Servo ClawWrist;
     private Servo ClawGrabber;
 
-    private ColorSensor LeftSensor;
-    private ColorSensor RightSensor;
+    private ColorRangeSensor LeftSensor;
+    private ColorRangeSensor RightSensor;
 
     private double MoveUp;
-    private double MoveBack;
-    private double ParkMove1;
+    private double LeftAdjust;
+    private double RightAdjust;
+    private double FrontAdjust1;
+    private double FrontAdjust2;
+    private double MoveBackStraight;
+    private double MoveBackLeft;
+    private double MoveBackRight;
+    private double ParkMove1Straight;
+    private double ParkMove1Strafe;
     private double ParkMove2;
     private double ParkMove3;
 
     abstract public void on_init();
 
+    @Override
     public void runOpMode() throws InterruptedException {
         on_init();
 
@@ -37,17 +46,61 @@ public abstract class MainAutonomous extends LinearOpMode {
 
         waitForStart();
 
+        drive_straight(MoveUp);
+
         String side = check_sensors();
-        if (side == "left") {
+        if (side.equals("left")) {
             turn_left();
-            drive_straight();
+            sleep(500);
+            drive_straight(LeftAdjust);
+        } else if (side.equals("right")) {
+            turn_right();
+            sleep(500);
+            drive_straight(RightAdjust);
+        } else {
+            strafe_left(FrontAdjust1);
+            sleep(500);
+            strafe_right(FrontAdjust2);
         }
+
+        ClawWrist.setPosition(0.0);
+        sleep(500);
+        ClawGrabber.setPosition(0.0);
+
+        sleep(500);
+
+        if (side.equals("left")) {
+            strafe_left(MoveBackLeft);
+        } else if (side.equals("right")) {
+            strafe_right(MoveBackRight);
+        } else {
+            drive_backwards(MoveBackStraight);
+        }
+
+        sleep(500);
+
+        if (side.equals("left")) {
+            drive_straight(ParkMove1Straight);
+        } else if (side.equals("right")) {
+            drive_backwards(ParkMove1Straight);
+        } else {
+            strafe_right(ParkMove1Strafe);
+        }
+
+
     }
 
-    public void init_vars(double move_up, double move_back, double park_move_1, double park_move_2, double park_move_3) {
+    public void init_vars(double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe, double park_move_2, double park_move_3) {
         MoveUp = move_up;
-        MoveBack = move_back;
-        ParkMove1 = park_move_1;
+        LeftAdjust = left_adjust;
+        RightAdjust = right_adjust;
+        FrontAdjust1 = front_adjust_1;
+        FrontAdjust2 = front_adjust_2;
+        MoveBackStraight = move_back_straight;
+        MoveBackLeft = move_back_left;
+        MoveBackRight = move_back_right;
+        ParkMove1Straight = park_move_1_straight;
+        ParkMove1Strafe = park_move_1_strafe;
         ParkMove2 = park_move_2;
         ParkMove3 = park_move_3;
     }
@@ -61,8 +114,8 @@ public abstract class MainAutonomous extends LinearOpMode {
         ClawWrist = hardwareMap.get(Servo.class, "ClawX");
         ClawGrabber = hardwareMap.get(Servo.class, "ClawY");
 
-        LeftSensor = hardwareMap.get(ColorSensor.class, "Left Sensor");
-        RightSensor = hardwareMap.get(ColorSensor.class, "Right Sensor");
+        LeftSensor = hardwareMap.get(ColorRangeSensor.class, "Left Sensor");
+        RightSensor = hardwareMap.get(ColorRangeSensor.class, "Right Sensor");
 
         FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -95,16 +148,16 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     public String check_sensors() {
-        LeftSensor.Gain = 2;
-        RightSensor.Gain = 2;
+        LeftSensor.setGain(2);
+        RightSensor.setGain(2);
 
         String ret = "front";
         int left_count = 0;
         int right_count = 0;
 
         for (int i = 0; i < 50; i++) {
-            double left_light = LeftSensor.RawLightDetected;
-            double right_light = RightSensor.RawLightDetected;
+            double left_light = LeftSensor.getRawLightDetected();
+            double right_light = RightSensor.getRawLightDetected();
 
             if (left_light >= Environment.Auto.LEFT_BOUND) {
                 left_count++;
@@ -145,18 +198,18 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     public void turn_right() {
-        drive(Environment.Auto.MovementCounts.DEG90, -Environment.MovementCounts.Auto.DEG90, Environment.MovementCounts.Auto.DEG90, -Environment.MovementCounts.Auto.DEG90);
+        drive(Environment.Auto.MovementCounts.DEG90, -Environment.Auto.MovementCounts.DEG90, Environment.Auto.MovementCounts.DEG90, -Environment.Auto.MovementCounts.DEG90);
     }
 
     public void turn_left() {
-        drive(-Environment.Auto.MovementCounts.DEG90, Environment.MovementCounts.Auto.DEG90, -Environment.MovementCounts.Auto.DEG90, Environment.MovementCounts.Auto.DEG90);
+        drive(-Environment.Auto.MovementCounts.DEG90, Environment.Auto.MovementCounts.DEG90, -Environment.Auto.MovementCounts.DEG90, Environment.Auto.MovementCounts.DEG90);
     }
 
     public void drive(double fl, double fr, double bl, double br) {
-        double fl_target = FrontLeft.getCurrentPosition() + fl;
-        double fr_target = FrontRight.getCurrentPosition() + fr;
-        double bl_target = BackLeft.getCurrentPosition() + bl;
-        double br_target = BackRight.getCurrentPosition() + br;
+        int fl_target = (int)(FrontLeft.getCurrentPosition() + fl);
+        int fr_target = (int)(FrontRight.getCurrentPosition() + fr);
+        int bl_target = (int)(BackLeft.getCurrentPosition() + bl);
+        int br_target = (int)(BackRight.getCurrentPosition() + br);
 
         FrontLeft.setTargetPosition(fl_target);
         FrontRight.setTargetPosition(fr_target);
