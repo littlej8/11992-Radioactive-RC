@@ -1,10 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.sun.tools.doclint.Env;
 
-import org.firstinspires.ftc.teamcode.Environment;
+import org.firstinspires.ftc.teamcode.Util.Environment;
 
 /**
  *    Concept for autonomous structure

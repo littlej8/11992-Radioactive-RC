@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-import org.firstinspires.ftc.teamcode.Environment;
+import org.firstinspires.ftc.teamcode.Util.Environment;
 
 /**
  *    Concept for using IMU sensor for turning
