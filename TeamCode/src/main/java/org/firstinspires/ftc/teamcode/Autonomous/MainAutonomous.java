@@ -81,10 +81,10 @@ public abstract class MainAutonomous extends LinearOpMode {
         
         sleep(500);
         ClawWrist.setPosition(0.0);
-        sleep(500);
+        sleep(1000);
         ClawGrabber.setPosition(0.0);
-        sleep(500);
-        ClawWrist.setPosition(1.0);
+        sleep(1000);
+        ClawWrist.setPosition(0.75);
         sleep(500);
         ClawGrabber.setPosition(1.0);
         sleep(500);

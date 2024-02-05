@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import org.firstinspires.ftc.teamcode.Util.Environment;
 import org.firstinspires.ftc.teamcode.Util.PID;
@@ -28,14 +32,14 @@ public class PIDTest extends LinearOpMode {
         waitForStart();
         imu.resetYaw();
 
-        drive_forward(Environment.COUNTS_PER_INCH * 24.0);
+        drive_forward(Environment.Auto.COUNTS_PER_INCH * 24.0);
         sleep(1000);
-        turn_to(90.0);
+        /*turn_to(90.0);
         sleep(1000);
-        turn_to(0.0)
+        turn_to(0.0);
         sleep(1000);
-        drive_backwards(Environment.COUNTS_PER_INCH * 21.0);
-        sleep(1000);
+        drive_backwards(Environment.Auto.COUNTS_PER_INCH * 21.0);
+        sleep(1000);*/
     }
 
     public void initialize() {
@@ -50,11 +54,21 @@ public class PIDTest extends LinearOpMode {
 
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
+        
+        FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         FrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Backleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        
+        FrontLeft.setDirection(DcMotor.Direction.FORWARD);
+        FrontRight.setDirection(DcMotor.Direction.FORWARD);
+        BackLeft.setDirection(DcMotor.Direction.REVERSE);
+        BackRight.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public double angleWrap(double radians) {
@@ -69,7 +83,7 @@ public class PIDTest extends LinearOpMode {
     }
 
     public boolean at_position(double fl, double fr, double bl, double br) {
-        double max_error = Math.max(Math.max(fl - FrontLeft.getCurrentPosition(), fr - FrontRight.getCurrentPosition()), Math.max(bl - BackLeft.getCurrentPosition(), br - BackRight.getCurrentPosition));
+        double max_error = Math.max(Math.max(fl - FrontLeft.getCurrentPosition(), fr - FrontRight.getCurrentPosition()), Math.max(bl - BackLeft.getCurrentPosition(), br - BackRight.getCurrentPosition()));
         return max_error <= Environment.Auto.PID_TOLERANCE;
     }
 
@@ -114,12 +128,16 @@ public class PIDTest extends LinearOpMode {
         FRPID.reset();
         BLPID.reset();
         BRPID.reset();
-
+        
         while (opModeIsActive() && !at_position(fl, fr, bl, br)) {
-            FrontLeft.setPower(FLPID.update(fl, FrontLeft.getCurrentPosition(), false));
+            /*FrontLeft.setPower(FLPID.update(fl, FrontLeft.getCurrentPosition(), false));
             FrontRight.setPower(FRPID.update(fr, FrontRight.getCurrentPosition(), false));
             BackLeft.setPower(BLPID.update(bl, BackLeft.getCurrentPosition(), false));
-            BackRight.setPower(BRPID.update(br, BackRight.getCurrentPosition(), false));
+            BackRight.setPower(BRPID.update(br, BackRight.getCurrentPosition(), false));*/
+            
+            telemetry.addData("FL target: ", fl);
+            telemetry.addData("FL position: ", FrontLeft.getCurrentPosition());
+            telemetry.addData("FL power: ", FLPID.update(fl, FrontLeft.getCurrentPosition(), false));
 
             telemetry.update();
         }
@@ -129,6 +147,6 @@ public class PIDTest extends LinearOpMode {
         BackLeft.setPower(0.0);
         BackRight.setPower(0.0);
 
-        telemetry.update()
+        telemetry.update();
     }
 }

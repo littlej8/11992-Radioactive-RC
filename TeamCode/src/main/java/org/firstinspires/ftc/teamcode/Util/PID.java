@@ -42,11 +42,11 @@ public class PID {
     public double update(double target, double cur_state, boolean angles) {
         double state = MotionProfile.get_position(target - cur_state, timer.seconds());
 
-        double error = (angles) ? Math.toDegrees(angleWrap(Math.toRadians(target - state))); : target - state;
-        double derivative = (error - lastError) / timer.seconds();
-        integralSum = integralSum + (error * timer.seconds());
+        double error = target - state;//(angles) ? Math.toDegrees(angleWrap(Math.toRadians(target - state))) : target - state;
+        double derivative = error - lastError;
+        integralSum += error;
 
-        double out = (Kp * error) + (Ki * integralSum) + (error * timer.seconds());
+        double out = Kp * error + Ki * integralSum + Kd * derivative;
 
         lastError = error;
 

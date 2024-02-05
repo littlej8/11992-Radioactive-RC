@@ -16,17 +16,17 @@ public class TrapezoidMotionProfile {
         double accel_dt = max_velocity / max_acceleration;
 
         double half_dist = distance / 2;
-        double accel_dist = 0.5 * max_acceleration * accel_dt ** 2;
+        double accel_dist = 0.5 * max_acceleration * (accel_dt * accel_dt);
 
         if (accel_dist > half_dist) {
             accel_dt = Math.sqrt(half_dist / (0.5 * max_acceleration));
         }
 
-        accel_dist = 0.5 * max_acceleration * accel_dt ** 2;
+        accel_dist = 0.5 * max_acceleration * (accel_dt * accel_dt);
 
         max_velocity = max_acceleration * accel_dt;
 
-        decel_dt = accel_dt;
+        double decel_dt = accel_dt;
 
         double cruise_dist = distance - 2 * accel_dist;
         double cruise_dt = cruise_dist / max_velocity;
@@ -39,18 +39,18 @@ public class TrapezoidMotionProfile {
         }
 
         if (elapsed_time < accel_dt) { // accelerating
-            return 0.5 * max_accel * elapsed_time ** 2;
+            return 0.5 * max_acceleration * (elapsed_time * elapsed_time);
         } else if (elapsed_time < decel_dt) { // cruising
-            accel_dist = 0.5 * max_accel * accel_dt ** 2;
+            accel_dist = 0.5 * max_acceleration * (accel_dt * accel_dt);
             double cruise_current_dt = elapsed_time - accel_dt;
 
             return accel_dist + max_velocity * cruise_current_dt;
         } else { // decelerating
-            accel_dist = 0.5 * max_accel * accel_dt ** 2;
+            accel_dist = 0.5 * max_acceleration * (accel_dt * accel_dt);
             cruise_dist = max_velocity * cruise_dt;
             decel_time = elapsed_time - decel_time;
 
-            return accel_dist + cruise_dist + max_velocity * decel_time - 0.5 * max_accel * decel_time ** 2;
+            return accel_dist + cruise_dist + max_velocity * decel_time - 0.5 * max_acceleration * (decel_time * decel_time);
         }
     }
 }
