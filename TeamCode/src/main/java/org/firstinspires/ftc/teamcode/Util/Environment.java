@@ -11,7 +11,7 @@ public class Environment {
         public static final double PID_KP = 2.0;
         public static final double PID_KI = 0.2;
         public static final double PID_KD = 0.3;
-        public static final double PID_TOLERANCE = 2.5;
+        public static final double PID_TOLERANCE = 5.0;
 
         public static final double COUNTS_PER_REVOLUTION = 145.1;
         public static final double WHEEL_DIAMETER_INCHES = 3.0;

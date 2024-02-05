@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Util;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class PIDController {
+public class PID {
     private final double Kp;
     private final double Ki;
     private final double Kd;
@@ -17,7 +17,7 @@ public class PIDController {
 
     private final ElapsedTime timer;
 
-    public PIDController(double kp, double ki, double kd, double max_acceleration, double max_velocity) {
+    public PID(double kp, double ki, double kd, double max_acceleration, double max_velocity) {
         Kp = kp;
         Ki = ki;
         Kd = kd;
