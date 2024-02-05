@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -77,6 +78,10 @@ public class MecanumOdometryController {
         RobotPos = new FieldCoord(0.0, 0.0, 0.0);
     }
 
+    public FieldCoord getRobotPos() {
+        return RobotPos;
+    }
+
     /**
      * Updates the robot position to current wheel positions
      */
@@ -92,9 +97,14 @@ public class MecanumOdometryController {
         double dBL = curBL - LastBL;
         double dBR = curBR - LastBR;
 
-        double dY = (dFL + dFR + dBL + dBR) / 4.0;
-        double dX = (dFL - dFR - dBL + dBR) / 4.0;
+        // change relative to robot
+        double dRobotY = (dFL + dFR + dBL + dBR) / 4.0;
+        double dRobotX = (dFL - dFR - dBL + dBR) / 4.0;
         double dHeading = curHeading - LastHeading;
+
+        // change on field (accounts for moving straight at angles)
+        double dY = dRobotY * Math.sin(Math.toRadians(curHeading));
+        double dX = dRobotX * Math.cos(Math.toRadians(curHeading));
 
         RobotPos.X += dX;
         RobotPos.Y += dY;
@@ -141,6 +151,7 @@ public class MecanumOdometryController {
 
         // Wait until all motors reach their target positions
         while (Opmode.opModeIsActive() && (FrontLeft.isBusy() || FrontRight.isBusy() || BackLeft.isBusy() || BackRight.isBusy())) {
+            update();
             Opmode.idle();
         }
 
@@ -176,6 +187,9 @@ public class MecanumOdometryController {
             orientation = Imu.getRobotYawPitchRollAngles();
             cur = orientation.getYaw(AngleUnit.DEGREES);
             error = heading - cur;
+
+            update();
+
             Opmode.idle();
         }
 
