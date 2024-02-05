@@ -30,7 +30,14 @@ public class PIDTest extends LinearOpMode {
         waitForStart();
         imu.resetYaw();
 
-
+        DriveTo(0.0, 24.0, 0.0);
+        sleep(1000);
+        DriveTo(0.0, 24.0, 90.0);
+        sleep(1000);
+        DriveTo(0.0, 24.0, 0.0);
+        sleep(1000);
+        DriveTo(0.0, 3.0, 0.0);
+        sleep(1000);
     }
 
     public double angleWrap(double radians) {
@@ -73,6 +80,8 @@ public class PIDTest extends LinearOpMode {
     }
 
     public void DriveTo(double x, double y, double heading) {
+        Robot.update();
+
         xPID.reset();
         yPID.reset();
         thetaPID.reset();
@@ -94,6 +103,7 @@ public class PIDTest extends LinearOpMode {
             BackRight.setPower(xRotated + yRotated - tPower);
 
             telemetry.update();
+            Robot.update();
         }
 
         FrontLeft.setPower(0.0);
@@ -102,5 +112,6 @@ public class PIDTest extends LinearOpMode {
         BackRight.setPower(0.0);
 
         telemetry.update();
+        Robot.update();
     }
 }

@@ -24,7 +24,7 @@ public class PIDTest extends LinearOpMode {
         sleep(1000);
         Robot.TurnTo(0.0);
         sleep(1000);
-        Robot.DriveTo(0.0, 21.0, 0.0);
+        Robot.DriveTo(0.0, 3.0, 0.0);
         sleep(1000);
     }
 
