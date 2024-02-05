@@ -14,13 +14,13 @@ public class PIDTest extends LinearOpMode {
     private DcMotor FrontRight;
     private DcMotor BackLeft;
     private DcMotor BackRight;
-    private PID FLPID;
-    private PID FRPID;
-    private PID BLPID;
-    private PID BRPID;
+    private PID FLPID = new PID(Environment.Auto.PID_KP, Environment.Auto.PID_KI, Environment.Auto.PID_KD, Environment.Auto.MAX_ACCELERATION, Environment.Auto.MAX_VELOCITY);
+    private PID FRPID = new PID(Environment.Auto.PID_KP, Environment.Auto.PID_KI, Environment.Auto.PID_KD, Environment.Auto.MAX_ACCELERATION, Environment.Auto.MAX_VELOCITY);
+    private PID BLPID = new PID(Environment.Auto.PID_KP, Environment.Auto.PID_KI, Environment.Auto.PID_KD, Environment.Auto.MAX_ACCELERATION, Environment.Auto.MAX_VELOCITY);
+    private PID BRPID = new PID(Environment.Auto.PID_KP, Environment.Auto.PID_KI, Environment.Auto.PID_KD, Environment.Auto.MAX_ACCELERATION, Environment.Auto.MAX_VELOCITY);
 
     private IMU imu;
-    private PID imuPID;
+    private PID imuPID = new PID(Environment.Auto.PID_KP, Environment.Auto.PID_KI, Environment.Auto.PID_KD, Environment.Auto.MAX_TURN_ACCELERATION, Environment.Auto.MAX_TURN_VELOCITY);
 
     public void runOpMode() {
         initialize();
@@ -30,7 +30,12 @@ public class PIDTest extends LinearOpMode {
 
         drive_forward(Environment.COUNTS_PER_INCH * 24.0);
         sleep(1000);
-        drive_backwards(Environment.COUNTS_PER_INCH * 24.0);
+        turn_to(90.0);
+        sleep(1000);
+        turn_to(0.0)
+        sleep(1000);
+        drive_backwards(Environment.COUNTS_PER_INCH * 21.0);
+        sleep(1000);
     }
 
     public void initialize() {
@@ -68,6 +73,34 @@ public class PIDTest extends LinearOpMode {
         return max_error <= Environment.Auto.PID_TOLERANCE;
     }
 
+    public void turn_to(double deg) {
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        double cur = orientation.getYaw(AngleUnit.DEGREES);
+        double target = deg;
+        
+        double error = Math.toDegrees(angleWrap(Math.toRadians(target - cur)));
+        
+        while (opModeIsActive() && Math.abs(error) > Environment.Auto.TURN_TOLERANCE) {
+            orientation = imu.getRobotYawPitchRollAngles();
+            cur = orientation.getYaw(AngleUnit.DEGREES);
+            error = Math.toDegrees(angleWrap(Math.toRadians(target - cur)));
+            
+            double turn_power = imuPID.update(target, cur, true);
+
+            FrontLeft.setPower(turn_power);
+            FrontRight.setPower(-turn_power);
+            BackLeft.setPower(turn_power);
+            BackRight.setPower(-turn_power);
+        }
+        
+        FrontLeft.setPower(0.0);
+        FrontRight.setPower(0.0);
+        BackLeft.setPower(0.0);
+        BackRight.setPower(0.0);
+        
+        telemetry.update();
+    }
+
     public void drive_forward(double amount) {
         drive(amount, amount, amount, amount);
     }
@@ -83,15 +116,19 @@ public class PIDTest extends LinearOpMode {
         BRPID.reset();
 
         while (opModeIsActive() && !at_position(fl, fr, bl, br)) {
-            FrontLeft.setPower(FLPID.update(fl, FrontLeft.getCurrentPosition()));
-            FrontRight.setPower(FRPID.update(fr, FrontRight.getCurrentPosition()));
-            BackLeft.setPower(BLPID.update(bl, BackLeft.getCurrentPosition()));
-            BackRight.setPower(BRPID.update(br, BackRight.getCurrentPosition()));
+            FrontLeft.setPower(FLPID.update(fl, FrontLeft.getCurrentPosition(), false));
+            FrontRight.setPower(FRPID.update(fr, FrontRight.getCurrentPosition(), false));
+            BackLeft.setPower(BLPID.update(bl, BackLeft.getCurrentPosition(), false));
+            BackRight.setPower(BRPID.update(br, BackRight.getCurrentPosition(), false));
+
+            telemetry.update();
         }
 
         FrontLeft.setPower(0.0);
         FrontRight.setPower(0.0);
         BackLeft.setPower(0.0);
         BackRight.setPower(0.0);
+
+        telemetry.update()
     }
 }

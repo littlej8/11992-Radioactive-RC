@@ -39,10 +39,10 @@ public class PID {
         timer.reset();
     }
 
-    public double update(double target, double cur_state) {
+    public double update(double target, double cur_state, boolean angles) {
         double state = MotionProfile.get_position(target - cur_state, timer.seconds());
 
-        double error = target - state;
+        double error = (angles) ? Math.toDegrees(angleWrap(Math.toRadians(target - state))); : target - state;
         double derivative = (error - lastError) / timer.seconds();
         integralSum = integralSum + (error * timer.seconds());
 
@@ -51,5 +51,16 @@ public class PID {
         lastError = error;
 
         return out;
+    }
+
+    public double angleWrap(double radians) {
+        while (radians > Math.PI) {
+            radians -= 2 * Math.PI;
+        }
+        while (radians < -Math.PI) {
+            radians += 2 * Math.PI;
+        }
+
+        return radians;
     }
 }

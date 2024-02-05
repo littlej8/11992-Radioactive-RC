@@ -13,10 +13,18 @@ public class Environment {
         public static final double PID_KD = 0.3;
         public static final double PID_TOLERANCE = 5.0;
 
+        public static final double ODOMETRY_TOLERANCE = 0.5;
+
         public static final double COUNTS_PER_REVOLUTION = 145.1;
         public static final double WHEEL_DIAMETER_INCHES = 3.0;
         public static final double COUNTS_PER_INCH = COUNTS_PER_REVOLUTION / (WHEEL_DIAMETER_INCHES * 3.1415);
         public static final double COUNTS_PER_DEGREE = COUNTS_PER_REVOLUTION / 360;
+
+        public static final double MAX_ACCELERATION = 6.0 * COUNTS_PER_INCH;
+        public static final double MAX_VELOCITY = 36.0 * COUNTS_PER_INCH;
+
+        public static final double MAX_TURN_ACCELERATION = 10.0;
+        public static final double MAX_TURN_VELOCITY = 60.0;
 
         public static class MovementInches {
             public static final double MOVE_UP = 25.0;

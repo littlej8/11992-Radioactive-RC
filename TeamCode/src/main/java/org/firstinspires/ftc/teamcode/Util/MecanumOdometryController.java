@@ -78,7 +78,7 @@ public class MecanumOdometryController {
         RobotPos = new FieldCoord(0.0, 0.0, 0.0);
     }
 
-    public FieldCoord getRobotPos() {
+    public FieldCoord getPosition() {
         return RobotPos;
     }
 
@@ -106,8 +106,8 @@ public class MecanumOdometryController {
         double dY = dRobotY * Math.sin(Math.toRadians(curHeading));
         double dX = dRobotX * Math.cos(Math.toRadians(curHeading));
 
-        RobotPos.X += dX;
-        RobotPos.Y += dY;
+        RobotPos.X += dX / Environment.Auto.COUNTS_PER_INCH;
+        RobotPos.Y += dY / Environment.Auto.COUNTS_PER_INCH;
         RobotPos.Heading += dHeading;
 
         LastFL = curFL;
@@ -150,7 +150,7 @@ public class MecanumOdometryController {
         Opmode.telemetry.update();
 
         // Wait until all motors reach their target positions
-        while (Opmode.opModeIsActive() && (FrontLeft.isBusy() || FrontRight.isBusy() || BackLeft.isBusy() || BackRight.isBusy())) {
+        while (Opmode.opModeIsActive() && (FrontLeft.isBusy() && FrontRight.isBusy() && BackLeft.isBusy() && BackRight.isBusy())) {
             update();
             Opmode.idle();
         }
@@ -174,7 +174,7 @@ public class MecanumOdometryController {
         YawPitchRollAngles orientation = Imu.getRobotYawPitchRollAngles();
         double cur = orientation.getYaw(AngleUnit.DEGREES);
 
-        double error = heading - cur;
+        double error = Math.toDegrees(angleWrap(Math.toRadians(heading - cur)));
 
         FrontLeft.setPower(-Environment.Auto.TURN_POWER);
         FrontRight.setPower(Environment.Auto.TURN_POWER);
@@ -186,7 +186,7 @@ public class MecanumOdometryController {
         while (Opmode.opModeIsActive() && Math.abs(error) > Environment.Auto.TURN_TOLERANCE) {
             orientation = Imu.getRobotYawPitchRollAngles();
             cur = orientation.getYaw(AngleUnit.DEGREES);
-            error = heading - cur;
+            error = Math.toDegrees(angleWrap(Math.toRadians(heading - cur)));
 
             update();
 
@@ -201,5 +201,16 @@ public class MecanumOdometryController {
         Opmode.telemetry.update();
 
         update();
+    }
+
+    public double angleWrap(double radians) {
+        while (radians > Math.PI) {
+            radians -= 2 * Math.PI;
+        }
+        while (radians < -Math.PI) {
+            radians += 2 * Math.PI;
+        }
+
+        return radians;
     }
 }

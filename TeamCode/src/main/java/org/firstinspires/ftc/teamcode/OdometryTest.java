@@ -10,12 +10,7 @@ import org.firstinspires.ftc.teamcode.Util.MecanumOdometryController;
 
 @Autonomous
 public class PIDTest extends LinearOpMode {
-    private DcMotor FrontLeft;
-    private DcMotor FrontRight;
-    private DcMotor BackLeft;
-    private DcMotor BackRight;
-
-    private IMU imu;
+    private MecanumOdometryController Robot;
 
     public void runOpMode() {
         initialize();
@@ -23,36 +18,34 @@ public class PIDTest extends LinearOpMode {
         waitForStart();
         imu.resetYaw();
 
-
-    }
-
-    public double angleWrap(double radians) {
-        while (radians > Math.PI) {
-            radians -= 2 * Math.PI;
-        }
-        while (radians < -Math.PI) {
-            radians += 2 * Math.PI;
-        }
-
-        return radians;
+        Robot.DriveTo(0.0, 24.0, 0.0);
+        sleep(1000);
+        Robot.TurnTo(90.0);
+        sleep(1000);
+        Robot.TurnTo(0.0);
+        sleep(1000);
+        Robot.DriveTo(0.0, 21.0, 0.0);
+        sleep(1000);
     }
 
     public void initialize() {
-        FrontLeft = hardwareMap.get(DcMotor.class, "Frontleft");
-        FrontRight = hardwareMap.get(DcMotor.class, "Frontright");
-        BackLeft = hardwareMap.get(DcMotor.class, "Backleft");
-        BackRight = hardwareMap.get(DcMotor.class, "Backright");
+        DcMotor FrontLeft = hardwareMap.get(DcMotor.class, "Frontleft");
+        DcMotor FrontRight = hardwareMap.get(DcMotor.class, "Frontright");
+        DcMotor BackLeft = hardwareMap.get(DcMotor.class, "Backleft");
+        DcMotor BackRight = hardwareMap.get(DcMotor.class, "Backright");
 
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
-        imu = hardwareMap.get(IMU.class, "imu");
+        IMU imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         FrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Backleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        Robot = new MecanumOdometryController(this, FrontLeft, FrontRight, BackLeft, BackRight, imu);
     }
 }
