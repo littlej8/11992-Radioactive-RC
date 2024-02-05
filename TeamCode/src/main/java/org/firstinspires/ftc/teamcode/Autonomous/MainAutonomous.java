@@ -47,7 +47,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     abstract public void on_init();
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         on_init();
 
         initialize();

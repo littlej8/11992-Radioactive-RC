@@ -24,7 +24,7 @@ public class MainTeleOp extends LinearOpMode {
     private Servo DroneLauncher;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         initialize();
 
         waitForStart();
