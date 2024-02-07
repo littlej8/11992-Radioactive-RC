@@ -59,6 +59,31 @@ public class Robot {
         }
     }
 
+    public Robot(DriveTrain drive, RevHubOrientationOnRobot.LogoFacingDirection logo_dir, RevHubOrientationOnRobot.UsbFacingDirection usb_dir) {
+        switch(drive) {
+            case DriveTrain.Mecanum:
+                motors.put("Frontleft", null);
+                motors.put("Frontright", null);
+                motors.put("Backleft", null);
+                motors.put("Backright", null);
+                break;
+            case DriveTrain.Tank:
+                System.out.println("Tank Drive is not implemented yet.");
+                break;
+            default:
+                System.out.println("Uh Oh");
+                break;
+        }
+
+        LogoDirection = logo_dir;
+        UsbDirection = usb_dir;
+    }
+
+    public void SetHubOrientation(RevHubOrientationOnRobot.LogoFacingDirection logo_dir, RevHubOrientationOnRobot.UsbFacingDirection usb_dir) {
+        LogoDirection = logo_dir;
+        UsbDirection = usb_dir;
+    }
+
     /**
      * Add component to the robot for initialization
      */
