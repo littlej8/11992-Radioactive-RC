@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.Util;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.robot.Robot;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
@@ -26,21 +28,27 @@ public class Robot {
         Servo,
     }
 
+    private HardwareMap hwMap;
+
     private Map<String, DcMotor> motors;
     private Map<String, Servo> servos;
 
+    RevHubOrientationOnRobot.LogoFacingDirection LogoDirection;
+    RevHubOrientationOnRobot.UsbFacingDirection UsbDirection;
+    
     private IMU imu;
 
     /**
      * Uses default names for motors (Frontleft, Backright, etc.)
+     * Uses default orientation for IMU (Forward & Up)
      */
     public Robot(DriveTrain drive) {
         switch(drive) {
             case DriveTrain.Mecanum:
-                motors.set("Frontleft", null);
-                motors.set("Frontright", null);
-                motors.set("Backleft", null);
-                motors.set("Backright", null);
+                motors.put("Frontleft", null);
+                motors.put("Frontright", null);
+                motors.put("Backleft", null);
+                motors.put("Backright", null);
                 break;
             case DriveTrain.Tank:
                 System.out.println("Tank Drive is not implemented yet.");
@@ -57,10 +65,10 @@ public class Robot {
     public void AddComponent(Component component, String name) {
         switch(component) {
             case Component.Motor:
-                motors.set(name, null);
+                motors.put(name, null);
                 break;
             case Component.Servo:
-                motors.set(name, null);
+                motors.put(name, null);
                 break;
             default:
                 System.out.println("Uh Oh");
@@ -72,6 +80,19 @@ public class Robot {
      * Initializes the robot
      */
     public void Init() {
+        for (String name : motors.keySet()) {
+            motors.put(name, hwMap.get(DcMotor.class, name));
+        }
 
+        for (String name : servos.keySet()) {
+            servos.put(name, hwMap.get(Servo.class, name));
+        }
+
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+
+        imu = hardwareMap.get(IMU.class, "imu");
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 }
