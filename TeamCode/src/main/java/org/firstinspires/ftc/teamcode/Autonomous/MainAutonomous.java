@@ -65,7 +65,7 @@ public abstract class MainAutonomous extends LinearOpMode {
         telemetry.addData("side: ", side);
         telemetry.update();
         
-        sleep(3000);
+        sleep(500);
         
         if (side.equals("left")) {
             turn_left();
@@ -113,14 +113,18 @@ public abstract class MainAutonomous extends LinearOpMode {
         if (ParkMove2Straight == 0) {
             return;
         }
+        
+        sleep(500);
 
         if (side.equals("left")) {
             strafe_right(ParkMove2Strafe);
         } else if (side.equals("right")) {
             strafe_left(ParkMove2Strafe);
         } else {
-            drive_forward(ParkMove2Straight);
+            drive_straight(ParkMove2Straight);
         }
+        
+        sleep(500);
 
         if (side.equals("left")) {
             drive_backwards(ParkMove3Straight);

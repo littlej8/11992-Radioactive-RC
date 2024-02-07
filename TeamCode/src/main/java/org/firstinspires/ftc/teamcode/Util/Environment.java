@@ -44,7 +44,7 @@ public class Environment {
 
             public static final double LEFT_ADJUST = 0.0;
             public static final double RIGHT_ADJUST = 0.0;
-            public static final double FRONT_ADJUST_1 = -25;
+            public static final double FRONT_ADJUST_1 = -50;
             public static final double FRONT_ADJUST_2 = 0;
 
             public static final double MOVE_BACK_STRAIGHT = 265;
@@ -59,13 +59,13 @@ public class Environment {
             public static final double PARK_MIDDLE_CLOSE_STRAIGHT = 400;
             public static final double PARK_MIDDLE_CLOSE_STRAFE = 425;
             public static final double PARK_MIDDLE_FAR_STRAIGHT = 1100;
-            public static final double PARK_MIDDLE_FAR_STRAFE = 1500;
+            public static final double PARK_MIDDLE_FAR_STRAFE = 1400;
 
-            public static final double PARK_MIDDLE_2_STRAIGHT = 400;
-            public static final double PARK_MIDDLE_2_STRAFE = 300;
+            public static final double PARK_MIDDLE_2_STRAIGHT = 575;
+            public static final double PARK_MIDDLE_2_STRAFE = 700;
             
-            public static final double PARK_MIDDLE_3_STRAIGHT = 150;
-            public static final double PARK_MIDDLE_3_STRAFE = 175;
+            public static final double PARK_MIDDLE_3_STRAIGHT = 200;
+            public static final double PARK_MIDDLE_3_STRAFE = 250;
 
             public static final double DEG90 = 350.0;
         }
