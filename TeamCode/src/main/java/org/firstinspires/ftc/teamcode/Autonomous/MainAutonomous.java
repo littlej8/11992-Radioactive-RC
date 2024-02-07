@@ -41,8 +41,10 @@ public abstract class MainAutonomous extends LinearOpMode {
     private double MoveBackRight;
     private double ParkMove1Straight;
     private double ParkMove1Strafe;
-    private double ParkMove2;
-    private double ParkMove3;
+    private double ParkMove2Straight = 0.0;
+    private double ParkMove2Strafe = 0.0;
+    private double ParkMove3Straight = 0.0;
+    private double ParkMove3Strafe = 0.0;
 
     abstract public void on_init();
 
@@ -107,9 +109,29 @@ public abstract class MainAutonomous extends LinearOpMode {
         } else {
             strafe_right(ParkMove1Strafe);
         }
+
+        if (ParkMove2Straight == 0) {
+            return;
+        }
+
+        if (side.equals("left")) {
+            strafe_right(ParkMove2Strafe);
+        } else if (side.equals("right")) {
+            strafe_left(ParkMove2Strafe);
+        } else {
+            drive_forward(ParkMove2Straight);
+        }
+
+        if (side.equals("left")) {
+            drive_backwards(ParkMove3Straight);
+        } else if (side.equals("right")) {
+            drive_straight(ParkMove3Straight);
+        } else {
+            strafe_right(ParkMove3Strafe);
+        }
     }
 
-    public void init_vars(double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe, double park_move_2, double park_move_3) {
+    public void init_vars(double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe) {
         MoveUp = move_up;
         LeftAdjust = left_adjust;
         RightAdjust = right_adjust;
@@ -120,8 +142,23 @@ public abstract class MainAutonomous extends LinearOpMode {
         MoveBackRight = move_back_right;
         ParkMove1Straight = park_move_1_straight;
         ParkMove1Strafe = park_move_1_strafe;
-        ParkMove2 = park_move_2;
-        ParkMove3 = park_move_3;
+    }
+
+    public void init_vars(double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double middle_move_1_straight, double middle_move_1_strafe, double middle_move_2_straight, double middle_move_2_strafe, double middle_move_3_straight, double middle_move_3_strafe) {
+        MoveUp = move_up;
+        LeftAdjust = left_adjust;
+        RightAdjust = right_adjust;
+        FrontAdjust1 = front_adjust_1;
+        FrontAdjust2 = front_adjust_2;
+        MoveBackStraight = move_back_straight;
+        MoveBackLeft = move_back_left;
+        MoveBackRight = move_back_right;
+        ParkMove1Straight = middle_move_1_straight;
+        ParkMove1Strafe = middle_move_1_strafe;
+        ParkMove2Straight = middle_move_2_straight;
+        ParkMove2Strafe = middle_move_2_strafe;
+        ParkMove3Straight = middle_move_3_straight;
+        ParkMove3Strafe = middle_move_3_strafe;
     }
 
     public void initialize() {

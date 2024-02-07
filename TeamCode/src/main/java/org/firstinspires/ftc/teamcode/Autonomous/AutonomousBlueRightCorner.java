@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Util.Environment;
 /**
  *    Concept for autonomous structure
  */
-@Autonomous
+@Autonomous(preselectTeleOp="MainTeleOp")
 public class AutonomousBlueRightCorner extends MainAutonomous {
     public void on_init() {
         super.init_vars(Environment.Auto.MovementCounts.MOVE_UP,
@@ -19,8 +19,6 @@ public class AutonomousBlueRightCorner extends MainAutonomous {
                         Environment.Auto.MovementCounts.MOVE_BACK_LEFT,
                         Environment.Auto.MovementCounts.MOVE_BACK_RIGHT,
                         -Environment.Auto.MovementCounts.PARK_CORNER_FAR_STRAIGHT,
-                        -Environment.Auto.MovementCounts.PARK_CORNER_FAR_STRAFE,
-                        0.0,
-                        0.0);
+                        -Environment.Auto.MovementCounts.PARK_CORNER_FAR_STRAFE);
     }
 }
