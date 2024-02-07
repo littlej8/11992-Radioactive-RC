@@ -124,7 +124,7 @@ public class FieldCentric extends LinearOpMode {
 
         double sin = Math.sin(theta - Math.PI/4);
         double cos = Math.cos(theta - Math.PI/4);
-        max = Math.max(Math.abs(sin), Math.abs(cos));
+        double max = Math.max(Math.abs(sin), Math.abs(cos));
 
         double fl_power = power * cos/max + pivot;
         double fr_power = power * sin/max - pivot;
