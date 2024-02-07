@@ -65,7 +65,7 @@ public class Environment {
             public static final double PARK_MIDDLE_2_STRAFE = 300;
             
             public static final double PARK_MIDDLE_3_STRAIGHT = 150;
-            public static final double PARK_MIDDLE_3_STRAFE = 175
+            public static final double PARK_MIDDLE_3_STRAFE = 175;
 
             public static final double DEG90 = 350.0;
         }

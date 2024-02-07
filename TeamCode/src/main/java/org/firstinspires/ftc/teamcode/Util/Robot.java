@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Util;
 
+import java.util.*;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -44,13 +46,13 @@ public class Robot {
      */
     public Robot(DriveTrain drive) {
         switch(drive) {
-            case DriveTrain.Mecanum:
+            case Mecanum:
                 motors.put("Frontleft", null);
                 motors.put("Frontright", null);
                 motors.put("Backleft", null);
                 motors.put("Backright", null);
                 break;
-            case DriveTrain.Tank:
+            case Tank:
                 System.out.println("Tank Drive is not implemented yet.");
                 break;
             default:
@@ -61,13 +63,13 @@ public class Robot {
 
     public Robot(DriveTrain drive, RevHubOrientationOnRobot.LogoFacingDirection logo_dir, RevHubOrientationOnRobot.UsbFacingDirection usb_dir) {
         switch(drive) {
-            case DriveTrain.Mecanum:
+            case Mecanum:
                 motors.put("Frontleft", null);
                 motors.put("Frontright", null);
                 motors.put("Backleft", null);
                 motors.put("Backright", null);
                 break;
-            case DriveTrain.Tank:
+            case Tank:
                 System.out.println("Tank Drive is not implemented yet.");
                 break;
             default:
@@ -89,10 +91,10 @@ public class Robot {
      */
     public void AddComponent(Component component, String name) {
         switch(component) {
-            case Component.Motor:
+            case Motor:
                 motors.put(name, null);
                 break;
-            case Component.Servo:
+            case Servo:
                 motors.put(name, null);
                 break;
             default:
@@ -117,7 +119,7 @@ public class Robot {
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
-        imu = hardwareMap.get(IMU.class, "imu");
+        imu = hwMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 }
