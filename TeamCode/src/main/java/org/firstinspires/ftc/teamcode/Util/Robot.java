@@ -25,6 +25,9 @@ public class Robot {
         Tank,
     }
 
+    /**
+     * Motors, Servos, etc that you need to move
+     */
     public enum Component {
         Motor,
         Servo,
@@ -36,63 +39,46 @@ public class Robot {
     private Map<String, DcMotor> motors;
     private Map<String, Servo> servos;
 
-    RevHubOrientationOnRobot.LogoFacingDirection LogoDirection;
-    RevHubOrientationOnRobot.UsbFacingDirection UsbDirection;
+    RevHubOrientationOnRobot.LogoFacingDirection LogoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+    RevHubOrientationOnRobot.UsbFacingDirection UsbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
     private IMU imu;
 
-    /**
-     * Base robot
-     */
+    private double RobotX = 0.0;
+    private double RobotY = 0.0;
+    private double RobotHeading = 0.0;
+
     public Robot(LinearOpMode opmode, HardwareMap hardware) {
-        OpMode = opmode;
-        hwMap = hardware;
+        SetOpMode(opmode);
+        SetHardwareMap(hardware);
+        SetDriveTrain(DriveTrain.Mecanum);
     }
 
-    /**
-     * Uses default names for motors (Frontleft, Backright, etc.)
-     * Uses default orientation for IMU (Forward & Up)
-     */
-    public Robot(LinearOpMode opmode, HardwareMap hardware, DriveTrain drive) {
-        OpMode = opmode;
-        hwMap = hardware;
+    public Robot(LinearOpMode opmode, HardwareMap hardware, double x_pos, double y_pos, double heading) {
+        SetOpMode(opmode);
+        SetHardwareMap(hardware);
+        SetPosition(x_pos, y_pos, heading);
+        SetDriveTrain(DriveTrain.Mecanum);
+    }
 
-        switch(drive) {
-            case Mecanum:
-                motors.put("Frontleft", null);
-                motors.put("Frontright", null);
-                motors.put("Backleft", null);
-                motors.put("Backright", null);
-                break;
-            case Tank:
-                System.out.println("Tank Drive is not implemented yet.");
-                break;
-            default:
-                System.out.println("Uh Oh");
-                break;
-        }
+    public Robot(LinearOpMode opmode, HardwareMap hardware, DriveTrain drive) {
+        SetOpMode(opmode);
+        SetHardwareMap(hardware);
+        SetDriveTrain(drive);
     }
 
     public Robot(LinearOpMode opmode, HardwareMap hardware, DriveTrain drive, RevHubOrientationOnRobot.LogoFacingDirection logo_dir, RevHubOrientationOnRobot.UsbFacingDirection usb_dir) {
+        SetOpMode(opmode);
+        SetHardwareMap(hardware);
+        SetDriveTrain(drive);
+        SetHubOrientation(logo_dir, usb_dir);
+    }
+
+    public void SetOpMode(LinearOpMode opmode) {
         OpMode = opmode;
+    }
+
+    public void SetHardwareMap(HardwareMap hardware) {
         hwMap = hardware;
-
-        switch(drive) {
-            case Mecanum:
-                motors.put("Frontleft", null);
-                motors.put("Frontright", null);
-                motors.put("Backleft", null);
-                motors.put("Backright", null);
-                break;
-            case Tank:
-                System.out.println("Tank Drive is not implemented yet.");
-                break;
-            default:
-                System.out.println("Uh Oh");
-                break;
-        }
-
-        LogoDirection = logo_dir;
-        UsbDirection = usb_dir;
     }
 
     public void SetDriveTrain(DriveTrain drive) {
@@ -117,8 +103,14 @@ public class Robot {
         UsbDirection = usb_dir;
     }
 
+    public void SetPosition(double x_pos, double y_pos, double heading) {
+        RobotX = x_pos;
+        RobotY = y_pos;
+        RobotHeading = heading;
+    }
+
     /**
-     * Add component to the robot for initialization
+     * Add component to the robot before initialization
      */
     public void AddComponent(Component component, String name) {
         switch(component) {
@@ -146,13 +138,43 @@ public class Robot {
             servos.put(name, hwMap.get(Servo.class, name));
         }
 
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
-        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
-
         imu = hwMap.get(IMU.class, "imu");
-        imu.initialize(new IMU.Parameters(orientationOnRobot));
+        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(LogoDirection, UsbDirection)));
     }
 
-    public void 
+    public DcMotor GetMotor(String name) {
+        return motors.get(name);
+    }
+
+    public Servo GetServo(String name) {
+        return servos.get(name)
+    }
+
+    public void UpdateRobotPosition() {
+        DcMotor fl = GetMotor("Frontleft");
+        DcMotor fr = GetMotor("Frontright");
+        DcMotor bl = GetMotor("Backleft");
+        DcMotor br = GetMotor("Backright");
+
+        double fl_pos = fl.getCurrentPosition();
+        double fr_pos = fr.getCurrentPosition();
+        double bl_pos = bl.getCurrentPosition();
+        double br_pos = br.getCurrentPosition();
+
+        /*
+            subtract individual motor positions please
+        */
+        double heading = Math.toRadians(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        double newX = (fl_pos + fr_pos + bl_pos + br_pos) / 4;
+        double newY = (fl_pos - fr_pos - bl_pos + br_pos) / 4;
+
+        double dX = dRight * Math.cos(heading);
+        double dY = dForward * Math.sin(heading);
+
+        RobotX += dX;
+        RobotY += dY;
+        RobotHeading = heading;
+    }
+
+    public void DriveTo()
 }
