@@ -30,6 +30,7 @@ public class Robot {
         Servo,
     }
 
+    private LinearOpMode OpMode;
     private HardwareMap hwMap;
 
     private Map<String, DcMotor> motors;
@@ -37,14 +38,24 @@ public class Robot {
 
     RevHubOrientationOnRobot.LogoFacingDirection LogoDirection;
     RevHubOrientationOnRobot.UsbFacingDirection UsbDirection;
-    
     private IMU imu;
+
+    /**
+     * Base robot
+     */
+    public Robot(LinearOpMode opmode, HardwareMap hardware) {
+        OpMode = opmode;
+        hwMap = hardware;
+    }
 
     /**
      * Uses default names for motors (Frontleft, Backright, etc.)
      * Uses default orientation for IMU (Forward & Up)
      */
-    public Robot(DriveTrain drive) {
+    public Robot(LinearOpMode opmode, HardwareMap hardware, DriveTrain drive) {
+        OpMode = opmode;
+        hwMap = hardware;
+
         switch(drive) {
             case Mecanum:
                 motors.put("Frontleft", null);
@@ -61,7 +72,10 @@ public class Robot {
         }
     }
 
-    public Robot(DriveTrain drive, RevHubOrientationOnRobot.LogoFacingDirection logo_dir, RevHubOrientationOnRobot.UsbFacingDirection usb_dir) {
+    public Robot(LinearOpMode opmode, HardwareMap hardware, DriveTrain drive, RevHubOrientationOnRobot.LogoFacingDirection logo_dir, RevHubOrientationOnRobot.UsbFacingDirection usb_dir) {
+        OpMode = opmode;
+        hwMap = hardware;
+
         switch(drive) {
             case Mecanum:
                 motors.put("Frontleft", null);
@@ -79,6 +93,23 @@ public class Robot {
 
         LogoDirection = logo_dir;
         UsbDirection = usb_dir;
+    }
+
+    public void SetDriveTrain(DriveTrain drive) {
+        switch(drive) {
+            case Mecanum:
+                motors.put("Frontleft", null);
+                motors.put("Frontright", null);
+                motors.put("Backleft", null);
+                motors.put("Backright", null);
+                break;
+            case Tank:
+                System.out.println("Tank Drive is not implemented yet.");
+                break;
+            default:
+                System.out.println("Uh Oh");
+                break;
+        }
     }
 
     public void SetHubOrientation(RevHubOrientationOnRobot.LogoFacingDirection logo_dir, RevHubOrientationOnRobot.UsbFacingDirection usb_dir) {
@@ -122,4 +153,6 @@ public class Robot {
         imu = hwMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
+
+    public void 
 }
