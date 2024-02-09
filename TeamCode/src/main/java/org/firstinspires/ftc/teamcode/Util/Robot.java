@@ -157,6 +157,9 @@ public class Robot {
         return servos.get(name);
     }
 
+    /*
+        http://web.mit.edu/6.186/2007/tutorials/odomtutorial/odomtutorial.pdf
+    */
     public void UpdateRobotPosition() {
         DcMotor fl = GetMotor("Frontleft");
         DcMotor fr = GetMotor("Frontright");
