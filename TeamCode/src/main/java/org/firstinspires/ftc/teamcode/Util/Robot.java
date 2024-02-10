@@ -39,7 +39,7 @@ public class Robot {
     private Map<String, DcMotor> motors;
     private Map<String, Servo> servos;
 
-    private Map<String, double> LastPositions;
+    private Map<String, Double> LastPositions;
 
     RevHubOrientationOnRobot.LogoFacingDirection LogoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
     RevHubOrientationOnRobot.UsbFacingDirection UsbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
@@ -140,10 +140,10 @@ public class Robot {
             servos.put(name, hwMap.get(Servo.class, name));
         }
 
-        LastPositions.put("Frontleft", GetMotor("Frontleft").getCurrentPosition());
-        LastPositions.put("Frontright", GetMotor("Frontright").getCurrentPosition());
-        LastPositions.put("Backleft", GetMotor("Backleft").getCurrentPosition());
-        LastPositions.put("Backright", GetMotor("Backright").getCurrentPosition());
+        LastPositions.put("Frontleft", (double)GetMotor("Frontleft").getCurrentPosition());
+        LastPositions.put("Frontright", (double)GetMotor("Frontright").getCurrentPosition());
+        LastPositions.put("Backleft", (double)GetMotor("Backleft").getCurrentPosition());
+        LastPositions.put("Backright", (double)GetMotor("Backright").getCurrentPosition());
 
         imu = hwMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(LogoDirection, UsbDirection)));
@@ -171,17 +171,17 @@ public class Robot {
         double dBL = bl.getCurrentPosition() - LastPositions.get("Backleft");
         double dBR = br.getCurrentPosition() - LastPositions.get("Backright");
 
-        LastPositions.put("Frontleft", fl.getCurrentPosition());
-        LastPositions.put("Frontright", fr.getCurrentPosition());
-        LastPositions.put("Backleft", bl.getCurrentPosition());
-        LastPositions.put("Backright", br.getCurrentPosition());
+        LastPositions.put("Frontleft", (double)fl.getCurrentPosition());
+        LastPositions.put("Frontright", (double)fr.getCurrentPosition());
+        LastPositions.put("Backleft", (double)bl.getCurrentPosition());
+        LastPositions.put("Backright", (double)br.getCurrentPosition());
 
         double heading = Math.toRadians(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         double dRobotX = (dFL + dFR + dBL + dBR) / 4;
         double dRobotY = (dFL - dFR - dBL + dBR) / 4;
 
-        double dFieldX = dRight * Math.cos(heading);
-        double dFieldY = dForward * Math.sin(heading);
+        double dFieldX = dRobotX * Math.cos(heading);
+        double dFieldY = dRobotY * Math.sin(heading);
 
         RobotX += dFieldX;
         RobotY += dFieldY;
