@@ -34,6 +34,7 @@ public class MainTeleOp extends LinearOpMode {
             UpdateArm();
             UpdateClaw();
             UpdateLift();
+            UpdateDrone();
 
             if (gamepad2.triangle) {
                 RobotRoutine(); // routine yayyyyy
@@ -112,7 +113,7 @@ public class MainTeleOp extends LinearOpMode {
 
     private void UpdateArm() {
         double left_y = gamepad2.left_stick_y;
-        double right_y = gamepad1.right_stick_y;
+        double right_y = gamepad2.right_stick_y;
 
         if (left_y != 0) {
             Arm.setPower(left_y * Environment.TeleOp.ARM_POWER);
@@ -137,7 +138,7 @@ public class MainTeleOp extends LinearOpMode {
         if (gamepad2.left_bumper) {
             ClawGrabber.setPosition(ClawGrabber.getPosition() + Environment.TeleOp.CLAW_GRABBER_SPEED);
         } else if (gamepad2.right_bumper) {
-            ClawGrabber.setPosition(ClawGrabber.getPosition() + Environment.TeleOp.CLAW_GRABBER_SPEED);
+            ClawGrabber.setPosition(ClawGrabber.getPosition() - Environment.TeleOp.CLAW_GRABBER_SPEED);
         }
     }
 

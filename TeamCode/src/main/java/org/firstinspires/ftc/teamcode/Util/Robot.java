@@ -147,7 +147,7 @@ public class Robot {
     }
 
     public Servo GetServo(String name) {
-        return servos.get(name)
+        return servos.get(name);
     }
 
     public void UpdateRobotPosition() {
@@ -168,13 +168,15 @@ public class Robot {
         double newX = (fl_pos + fr_pos + bl_pos + br_pos) / 4;
         double newY = (fl_pos - fr_pos - bl_pos + br_pos) / 4;
 
-        double dX = dRight * Math.cos(heading);
-        double dY = dForward * Math.sin(heading);
+        double dX = newX * Math.cos(heading);
+        double dY = newY * Math.sin(heading);
 
         RobotX += dX;
         RobotY += dY;
         RobotHeading = heading;
     }
 
-    public void DriveTo()
+    public void DriveTo() {
+
+    }
 }
