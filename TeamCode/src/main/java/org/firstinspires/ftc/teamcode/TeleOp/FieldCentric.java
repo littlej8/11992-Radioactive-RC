@@ -40,6 +40,7 @@ public class FieldCentric extends LinearOpMode {
             UpdateArm();
             UpdateClaw();
             UpdateLift();
+            UpdateDrone();
 
             if (gamepad2.triangle) {
                 RobotRoutine(); // routine yayyyyy
@@ -113,29 +114,29 @@ public class FieldCentric extends LinearOpMode {
     }
 
     private void UpdateWheels() {
-        double horizontal = -gamepad1.left_stick_x;
-        double vertical = gamepad1.left_stick_y;
-        double pivot = -gamepad1.right_stick_x / 2; // half turn speed
+        double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-        double robot_yaw = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        double x = gamepad1.left_stick_x;
+        double y = -gamepad1.left_stick_y;
+        double turn = gamepad1.right_stick_x / 2; // half turn speed
 
-        double theta = Math.atan2(vertical, horizontal) + Math.toRadians(robot_yaw);
-        double power = Math.hypot(horizontal, vertical) * Environment.TeleOp.WHEEL_POWER;
+        double theta = Math.atan2(y, x) + heading;
+        double power = Math.hypot(x, y) * Environment.TeleOp.WHEEL_POWER;
 
         double sin = Math.sin(theta - Math.PI/4);
         double cos = Math.cos(theta - Math.PI/4);
         double max = Math.max(Math.abs(sin), Math.abs(cos));
 
-        double fl_power = power * cos/max + pivot;
-        double fr_power = power * sin/max - pivot;
-        double bl_power = power * sin/max + pivot;
-        double br_power = power * cos/max - pivot;
+        double fl_power = power * cos/max + turn;
+        double fr_power = power * sin/max - turn;
+        double bl_power = power * sin/max + turn;
+        double br_power = power * cos/max - turn;
 
-        if ((power + Math.abs(pivot)) > 1) {
-            fl_power /= power + pivot;
-            fr_power /= power + pivot;
-            bl_power /= power + pivot;
-            br_power /= power + pivot;
+        if ((power + Math.abs(turn)) > 1) {
+            fl_power /= power + Math.abs(turn);
+            fr_power /= power + Math.abs(turn);
+            bl_power /= power + Math.abs(turn);
+            br_power /= power + Math.abs(turn);
         }
 
         FrontLeft.setPower(fl_power);
@@ -171,7 +172,7 @@ public class FieldCentric extends LinearOpMode {
         if (gamepad2.left_bumper) {
             ClawGrabber.setPosition(ClawGrabber.getPosition() + Environment.TeleOp.CLAW_GRABBER_SPEED);
         } else if (gamepad2.right_bumper) {
-            ClawGrabber.setPosition(ClawGrabber.getPosition() + Environment.TeleOp.CLAW_GRABBER_SPEED);
+            ClawGrabber.setPosition(ClawGrabber.getPosition() - Environment.TeleOp.CLAW_GRABBER_SPEED);
         }
     }
 
