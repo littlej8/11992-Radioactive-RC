@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Util.Environment;
 
@@ -22,6 +24,12 @@ public class MainTeleOp extends LinearOpMode {
     private Servo ClawWrist;
     private Servo ClawGrabber;
     private Servo DroneLauncher;
+    
+    private boolean Manual = false;
+    private boolean ManualTimeout = false;
+    private ElapsedTime ManualTimer = new ElapsedTime();
+    private boolean RoutineRunning = false;
+    private ElapsedTime RoutineTimer = new ElapsedTime();
 
     @Override
     public void runOpMode() {
@@ -34,11 +42,25 @@ public class MainTeleOp extends LinearOpMode {
             UpdateArm();
             UpdateClaw();
             UpdateLift();
+            UpdateDrone();
 
             if (gamepad2.triangle) {
-                RobotRoutine(); // routine yayyyyy
+                RoutineRunning = true;
+                RoutineTimer.reset();
             }
-
+            RobotRoutine();
+            
+            if (gamepad2.square && !ManualTimeout) {
+                ManualMode();
+                ManualTimeout = true;
+                ManualTimer.reset();
+            }
+            
+            if (ManualTimer.seconds() >= 0.25) {
+                ManualTimeout = false;
+            }
+            
+            telemetry.addData("Manual Mode: ", Manual);
             telemetry.update();
         }
     }
@@ -98,6 +120,16 @@ public class MainTeleOp extends LinearOpMode {
         ClawWrist.scaleRange(Environment.TeleOp.CLAW_WRIST_MIN, Environment.TeleOp.CLAW_WRIST_MAX);
         ClawGrabber.scaleRange(Environment.TeleOp.CLAW_GRABBER_MIN, Environment.TeleOp.CLAW_GRABBER_MAX);
     }
+    
+    private void ManualMode() {
+        //ClawWrist.scaleRange(0.0, 1.0);
+        if (!Manual) {
+            ClawGrabber.scaleRange(0.0, 1.0);
+        } else {
+            ClawGrabber.scaleRange(Environment.TeleOp.CLAW_GRABBER_MIN, Environment.TeleOp.CLAW_GRABBER_MAX);
+        }
+        Manual = !Manual;
+    }
 
     private void UpdateWheels() {
         double horizontal = -gamepad1.left_stick_x;
@@ -112,10 +144,10 @@ public class MainTeleOp extends LinearOpMode {
 
     private void UpdateArm() {
         double left_y = gamepad2.left_stick_y;
-        double right_y = gamepad1.right_stick_y;
+        double right_y = gamepad2.right_stick_y;
 
         if (left_y != 0) {
-            Arm.setPower(left_y * Environment.TeleOp.ARM_POWER);
+            Arm.setPower(-left_y * Environment.TeleOp.ARM_POWER);
         } else {
             Arm.setPower(0.0);
         }
@@ -137,7 +169,7 @@ public class MainTeleOp extends LinearOpMode {
         if (gamepad2.left_bumper) {
             ClawGrabber.setPosition(ClawGrabber.getPosition() + Environment.TeleOp.CLAW_GRABBER_SPEED);
         } else if (gamepad2.right_bumper) {
-            ClawGrabber.setPosition(ClawGrabber.getPosition() + Environment.TeleOp.CLAW_GRABBER_SPEED);
+            ClawGrabber.setPosition(ClawGrabber.getPosition() - Environment.TeleOp.CLAW_GRABBER_SPEED);
         }
     }
 
@@ -163,16 +195,25 @@ public class MainTeleOp extends LinearOpMode {
     }
 
     private void RobotRoutine() {
-        ClawWrist.setPosition(0.5);
-        ClawGrabber.setPosition(0.0);
-
-        WheelMoveTime(15);
-        sleep(500);
-
-        ClawWrist.setPosition(0.0);
-        sleep(500);
-
-        ClawGrabber.setPosition(1.0);
+        if (RoutineRunning) {
+            if (RoutineTimer.seconds() >= 0.0 && RoutineTimer.seconds() <= 0.1) {
+                ClawWrist.setPosition(0.5);
+                ClawGrabber.setPosition(0.0);
+            }
+            
+            if (RoutineTimer.seconds() >= 0.5 && RoutineTimer.seconds() <= 0.6) {
+                ClawWrist.setPosition(0.0);
+            }
+            
+            if (RoutineTimer.seconds() >= 1.0 && RoutineTimer.seconds() <= 1.1) {
+                ClawGrabber.setPosition(1.0);
+            }
+            
+            if (RoutineTimer.seconds() >= 2.0 && RoutineTimer.seconds() <= 2.1) {
+                ClawWrist.setPosition(0.5);
+                RoutineRunning = false;
+            }
+        }
     }
 
     private void WheelMoveTime(long time) {

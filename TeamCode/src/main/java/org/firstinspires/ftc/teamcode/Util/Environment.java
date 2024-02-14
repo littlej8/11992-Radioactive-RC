@@ -45,9 +45,9 @@ public class Environment {
             public static final double LEFT_ADJUST = 0.0;
             public static final double RIGHT_ADJUST = 0.0;
             public static final double FRONT_ADJUST_1 = -50;
-            public static final double FRONT_ADJUST_2 = 0;
+            public static final double FRONT_ADJUST_2 = 25;
 
-            public static final double MOVE_BACK_STRAIGHT = 265;
+            public static final double MOVE_BACK_STRAIGHT = 225;
             public static final double MOVE_BACK_RIGHT = 375;
             public static final double MOVE_BACK_LEFT = 375;
 
@@ -56,16 +56,16 @@ public class Environment {
             public static final double PARK_CORNER_CLOSE_STRAFE = 525;
             public static final double PARK_CORNER_FAR_STRAFE = 1600;
 
-            public static final double PARK_MIDDLE_CLOSE_STRAIGHT = 400;
-            public static final double PARK_MIDDLE_CLOSE_STRAFE = 425;
-            public static final double PARK_MIDDLE_FAR_STRAIGHT = 1100;
-            public static final double PARK_MIDDLE_FAR_STRAFE = 1400;
+            public static final double PARK_MIDDLE_CLOSE_STRAIGHT = 300;
+            public static final double PARK_MIDDLE_CLOSE_STRAFE = 325;
+            public static final double PARK_MIDDLE_FAR_STRAIGHT = 900;
+            public static final double PARK_MIDDLE_FAR_STRAFE = 1150;
 
             public static final double PARK_MIDDLE_2_STRAIGHT = 575;
-            public static final double PARK_MIDDLE_2_STRAFE = 700;
+            public static final double PARK_MIDDLE_2_STRAFE = 725;
             
-            public static final double PARK_MIDDLE_3_STRAIGHT = 200;
-            public static final double PARK_MIDDLE_3_STRAFE = 250;
+            public static final double PARK_MIDDLE_3_STRAIGHT = 300;
+            public static final double PARK_MIDDLE_3_STRAFE = 350;
 
             public static final double DEG90 = 350.0;
         }
@@ -84,9 +84,9 @@ public class Environment {
 
         public static final double CLAW_WRIST_SPEED = 0.0025;
         public static final double CLAW_GRABBER_SPEED = 0.005;
-        public static final double CLAW_WRIST_MIN = 0.2;
+        public static final double CLAW_WRIST_MIN = 0.25;
         public static final double CLAW_WRIST_MAX = 0.75;
         public static final double CLAW_GRABBER_MIN = 0.25;
-        public static final double CLAW_GRABBER_MAX = 0.75;
+        public static final double CLAW_GRABBER_MAX = 0.825;
     }
 }

@@ -78,7 +78,7 @@ public abstract class MainAutonomous extends LinearOpMode {
         } else {
             strafe_left(FrontAdjust1);
             sleep(500);
-            strafe_right(FrontAdjust2);
+            drive_backwards(FrontAdjust2);
         }
         
         sleep(500);
@@ -90,7 +90,6 @@ public abstract class MainAutonomous extends LinearOpMode {
         sleep(500);
         ClawGrabber.setPosition(1.0);
         sleep(500);
-        
 
         if (side.equals("left")) {
             strafe_left(MoveBackLeft);
@@ -99,8 +98,13 @@ public abstract class MainAutonomous extends LinearOpMode {
         } else {
             drive_backwards(MoveBackStraight);
         }
-
-        sleep(500);
+        
+        /*
+        if (ParkMove2Straight == 0) {
+            sleep(500);
+        } else {
+            sleep(10000);
+        }
 
         if (side.equals("left")) {
             drive_backwards(ParkMove1Straight);
@@ -133,6 +137,7 @@ public abstract class MainAutonomous extends LinearOpMode {
         } else {
             strafe_right(ParkMove3Strafe);
         }
+        */
     }
 
     public void init_vars(double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe) {
@@ -208,7 +213,6 @@ public abstract class MainAutonomous extends LinearOpMode {
         BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         ClawWrist.scaleRange(0.3, 0.75);
-        ClawGrabber.scaleRange(0.25, 0.9);
 
         ClawGrabber.setPosition(1.0);
         sleep(1000);

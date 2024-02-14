@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.*;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -13,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Util.Environment;
 
 @TeleOp
+@Disabled
 public class FieldCentric extends LinearOpMode {
     private DcMotor FrontLeft;
     private DcMotor FrontRight;
@@ -115,7 +115,7 @@ public class FieldCentric extends LinearOpMode {
     private void UpdateWheels() {
         double horizontal = -gamepad1.left_stick_x;
         double vertical = gamepad1.left_stick_y;
-        double pivot = gamepad1.right_stick_x / 2; // half turn speed
+        double pivot = -gamepad1.right_stick_x / 2; // half turn speed
 
         double robot_yaw = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
@@ -146,7 +146,7 @@ public class FieldCentric extends LinearOpMode {
 
     private void UpdateArm() {
         double left_y = gamepad2.left_stick_y;
-        double right_y = gamepad1.right_stick_y;
+        double right_y = gamepad2.right_stick_y;
 
         if (left_y != 0) {
             Arm.setPower(left_y * Environment.TeleOp.ARM_POWER);
