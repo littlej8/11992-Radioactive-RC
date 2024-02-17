@@ -3,11 +3,15 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Util.Environment;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 @TeleOp
 public class MainTeleOp extends LinearOpMode {
@@ -23,6 +27,7 @@ public class MainTeleOp extends LinearOpMode {
 
     private Servo ClawWrist;
     private Servo ClawGrabber;
+    private CRServo ClawGrabberCR;
     private Servo DroneLauncher;
     
     private boolean Manual = false;
@@ -78,6 +83,7 @@ public class MainTeleOp extends LinearOpMode {
 
         ClawWrist = hardwareMap.get(Servo.class, "ClawX");
         ClawGrabber = hardwareMap.get(Servo.class, "ClawY");
+        ClawGrabberCR = hardwareMap.get(CRServo.class, "ClawY");
         DroneLauncher = hardwareMap.get(Servo.class, "Airplane Launcher");
 
         FrontLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -168,8 +174,16 @@ public class MainTeleOp extends LinearOpMode {
 
         if (gamepad2.left_bumper) {
             ClawGrabber.setPosition(ClawGrabber.getPosition() + Environment.TeleOp.CLAW_GRABBER_SPEED);
+            ClawGrabberCR.setPower(0.025);
         } else if (gamepad2.right_bumper) {
             ClawGrabber.setPosition(ClawGrabber.getPosition() - Environment.TeleOp.CLAW_GRABBER_SPEED);
+            ClawGrabberCR.setPower(-0.1);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    ClawGrabberCR.setPower(0.0);
+                }
+            }, 500L);
         }
     }
 
