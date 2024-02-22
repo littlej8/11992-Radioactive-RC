@@ -12,6 +12,8 @@ public class DriveTrain {
     private final DcMotor fl, fr, bl, br;
     private final IMU imu;
 
+    public static double drive_speed, turn_speed;
+
     public DriveTrain(HardwareMap hwMap) {
         this.fl = hwMap.get(DcMotor.class, "Frontleft");
         this.fr = hwMap.get(DcMotor.class, "Frontright");
@@ -25,7 +27,11 @@ public class DriveTrain {
         this.imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 
-    public void DriveForward() {
+    public void DriveForward(double amount) {
+
+    }
+
+    public void TurnTo(double deg) {
 
     }
 
