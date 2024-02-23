@@ -145,7 +145,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
     }
 
     public void initialize() {
-        drive = new DriveTrain(hardwareMap);
+        drive = new DriveTrain(this, hardwareMap);
         trap = new Trapdoor(hardwareMap);
         claw = new Claw(hardwareMap);
         sensors = new TeamPropSensors(hardwareMap);

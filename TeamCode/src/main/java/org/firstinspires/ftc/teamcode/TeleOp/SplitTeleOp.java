@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Subsystems;
+import org.firstinspires.ftc.teamcode.Subsystems.*;
 
 @TeleOp
-public class MainTeleOp extends LinearOpMode {
+public class SplitTeleOp extends LinearOpMode {
     private DriveTrain drive;
     private Lift lift;
     private DroneLauncher drone;
@@ -26,7 +26,7 @@ public class MainTeleOp extends LinearOpMode {
     }
 
     public void initialize() {
-        drive = new DriveTrain(hardwareMap);
+        drive = new DriveTrain(this, hardwareMap);
         lift = new Lift(hardwareMap);
         drone = new DroneLauncher(hardwareMap);
     }

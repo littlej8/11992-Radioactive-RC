@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 public class TeamPropSensors {
     private final ColorRangeSensor left, right;
 
-    public static double LIGHT_SENSITIVITY, LEFT_BOUND, RIGHT_BOUND = 30, 145, 170;
+    public static double LIGHT_SENSITIVITY = 30, LEFT_BOUND = 145, RIGHT_BOUND = 170;
 
     public enum TeamPropLocation {
         LEFT,
@@ -53,4 +53,3 @@ public class TeamPropSensors {
         return ret;
     }
 }
->>>>>>> f4b53614836423d23b13a22c44ae89d829631ec9

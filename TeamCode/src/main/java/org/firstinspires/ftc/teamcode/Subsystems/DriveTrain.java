@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,13 +11,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class DriveTrain {
+    private final LinearOpMode opMode;
     private final DcMotor fl, fr, bl, br;
     private final IMU imu;
+    public static double DRIVE_SPEED = 0.2, TURN_SPEED = 0.1, TURN_TOLERANCE = 5.0;
 
-    public static double DRIVE_SPEED, TURN_SPEED, TURN_TOLERANCE = 0.2, 0.1, 5.0;
-
-    public DriveTrain(HardwareMap hwMap) {
-        this.telemetry = telemetry;
+    public DriveTrain(LinearOpMode opMode, HardwareMap hwMap) {
+        this.opMode = opMode;
 
         this.fl = hwMap.get(DcMotor.class, "Frontleft");
         this.fr = hwMap.get(DcMotor.class, "Frontright");
@@ -60,7 +61,7 @@ public class DriveTrain {
     public void TurnTo(double target) {
         target = Math.toRadians(target);
 
-        double current = Math.toRadians(GetOrientation());
+        double current = Math.toRadians(angleWrap(GetOrientation()));
         double error = target - current;
 
         if (error > 0) {
@@ -68,7 +69,7 @@ public class DriveTrain {
             this.fr.setPower(TURN_SPEED);
             this.bl.setPower(-TURN_SPEED);
             this.br.setPower(TURN_SPEED);
-        } else if (error > 0) {
+        } else if (error < 0) {
             this.fl.setPower(TURN_SPEED);
             this.fr.setPower(-TURN_SPEED);
             this.bl.setPower(TURN_SPEED);
@@ -77,10 +78,10 @@ public class DriveTrain {
             return;
         }
 
-        while (opModeIsActive() && error > TURN_TOLERANCE) {
-            current = Math.toRadians(GetOrientation());
-            error = target - currrent;
-            idle();
+        while (opMode.opModeIsActive() && error > TURN_TOLERANCE) {
+            current = Math.toRadians(angleWrap(GetOrientation()));
+            error = target - current;
+            opMode.idle();
         }
 
         this.fl.setPower(0.0);
@@ -121,8 +122,8 @@ public class DriveTrain {
         this.bl.setPower(DRIVE_SPEED);
         this.br.setPower(DRIVE_SPEED);
 
-        while (opModeIsActive() && (this.fl.isBusy() || this.ffr.isBusy() || this.bl.isBusy() || this.br.isBusy())) {
-            idle();
+        while (opMode.opModeIsActive() && (this.fl.isBusy() || this.fr.isBusy() || this.bl.isBusy() || this.br.isBusy())) {
+            opMode.idle();
         }
 
         this.fl.setPower(0.0);

@@ -8,8 +8,8 @@ public class Lift {
     private final DcMotor left, right;
 
     public Lift(HardwareMap hwMap) {
-        left = hwMap.get(Servo.class, "LifterArm1");
-        right = hwMap.get(Servo.class, "LifterArm2");
+        left = hwMap.get(DcMotor.class, "LifterArm1");
+        right = hwMap.get(DcMotor.class, "LifterArm2");
 
         left.setDirection(DcMotor.Direction.REVERSE);
         right.setDirection(DcMotor.Direction.FORWARD);
@@ -25,13 +25,13 @@ public class Lift {
     }
 
     public void StartLifting() {
-        left.setPower(Environment.TeleOp.LIFT_POWER);
-        right.setPower(Environment.TeleOp.LIFT_POWER);
+        left.setPower(1);
+        right.setPower(1);
     }
 
     public void PullLegsUp() {
-        left.setPower(-Environment.TeleOp.LIFT_POWER);
-        right.setPower(-Environment.TeleOp.LIFT_POWER);
+        left.setPower(-1);
+        right.setPower(-1);
     }
 
     public void StopLifting() {
