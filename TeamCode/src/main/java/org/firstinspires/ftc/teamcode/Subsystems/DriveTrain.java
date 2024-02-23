@@ -57,25 +57,47 @@ public class DriveTrain {
         drive(-amount, -amount, amount, amount);
     }
 
-    public void TurnTo(double deg) {
-        double current = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        double error = Math.abs(deg - current);
+    public void TurnTo(double target) {
+        target = Math.toRadians(target);
 
-        this.fl.setPower(-TURN_SPEED);
-        this.fr.setPower(TURN_SPEED);
-        this.bl.setPower(-TURN_SPEED);
-        this.br.setPower(TURN_SPEED);
-                
+        double current = Math.toRadians(GetOrientation());
+        double error = target - current;
+
+        if (error > 0) {
+            this.fl.setPower(-TURN_SPEED);
+            this.fr.setPower(TURN_SPEED);
+            this.bl.setPower(-TURN_SPEED);
+            this.br.setPower(TURN_SPEED);
+        } else if (error > 0) {
+            this.fl.setPower(TURN_SPEED);
+            this.fr.setPower(-TURN_SPEED);
+            this.bl.setPower(TURN_SPEED);
+            this.br.setPower(-TURN_SPEED);
+        } else {
+            return;
+        }
+
         while (opModeIsActive() && error > TURN_TOLERANCE) {
-            current = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            error = deg - currrent;
+            current = Math.toRadians(GetOrientation());
+            error = target - currrent;
             idle();
         }
-        
+
         this.fl.setPower(0.0);
         this.fr.setPower(0.0);
         this.bl.setPower(0.0);
         this.br.setPower(0.0);
+    }
+
+    private double angleWrap(double radians) {
+        while (radians > Math.PI) {
+            radians -= 2 * Math.PI;
+        }
+        while (radians < -Math.PI) {
+            radians += 2 * Math.PI;
+        }
+
+        return radians;
     }
 
     private void drive(double fl, double fr, double bl, double br) {

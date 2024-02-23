@@ -2,21 +2,30 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class DroneLauncher {
-    private final Servo claw;
+    private final Servo drone;
 
-    public static double OPENED, CLOSED = 0.0, 1.0;
+    public static double LAUNCH, PRIMED = 0.0, 1.0;
 
-    public Claw(HardwareMap hwMap) {
-        claw = hwMap.get(Servo.class, "Claw");
+    public DroneLauncher(HardwareMap hwMap) {
+        drone = hwMap.get(Servo.class, "DroneLauncher");
+
+        drone.setDirection(Servo.Direction.FORWARD);
     }
 
-    public void Open() {
-        claw.setPosition(OPENED);
+    public void Launch() {
+        drone.setPosition(LAUNCH);
     }
 
-    public void Close() {
-        claw.setPosition(CLOSED);
+    public void Reset() {
+        drone.setPosition(PRIMED);
+    }
+
+    public void UpdateTeleOp(Gamepad controller) {
+        if (controller.left_bumper && controller.right_bumper && controller.left_trigger > 0 && controller.right_trigger > 0) {
+            Launch();
+        }
     }
 }

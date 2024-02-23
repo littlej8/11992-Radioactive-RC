@@ -4,19 +4,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Trapdoor {
-    private final Servo claw;
+    private final Servo trap;
 
-    public static double OPENED, CLOSED = 0.0, 1.0;
+    public static double OPENED, CLOSED = 0.0, 0.5;
 
-    public Claw(HardwareMap hwMap) {
-        claw = hwMap.get(Servo.class, "Claw");
+    public Trapdoor(HardwareMap hwMap) {
+        trap = hwMap.get(Servo.class, "Trapdoor");
     }
 
     public void Open() {
-        claw.setPosition(OPENED);
+        trap.setPosition(OPENED);
     }
 
     public void Close() {
-        claw.setPosition(CLOSED);
+        trap.setPosition(CLOSED);
     }
 }

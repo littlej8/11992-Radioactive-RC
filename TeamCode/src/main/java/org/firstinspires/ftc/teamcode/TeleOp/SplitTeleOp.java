@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Subsystems;
 
 @TeleOp
-@Disabled
 public class MainTeleOp extends LinearOpMode {
     private DriveTrain drive;
     private Lift lift;
