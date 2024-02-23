@@ -13,9 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Util.Environment;
 import org.firstinspires.ftc.teamcode.Util.MecanumOdometryController;
 
-/**
- *    Concept for autonomous structure
- */
 public abstract class MainAutonomous extends LinearOpMode {
     private DcMotor FrontLeft;
     private DcMotor FrontRight;
