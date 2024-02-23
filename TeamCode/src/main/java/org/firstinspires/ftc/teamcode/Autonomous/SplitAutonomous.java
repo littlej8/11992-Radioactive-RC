@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Subsystems.*;
 
@@ -37,17 +39,17 @@ public abstract class SplitAutonomous extends LinearOpMode {
         drive.DriveForward(MoveUp);
         sleep(500);
 
-        drive.TurnTo(0);
-        sleep(500);
-
-        TeamPropSensors.TeamPropLocation side = sensors.CheckSensors();
+        String side = sensors.CheckSensors();
+        telemetry.addData("Side: ", side);
+        telemetry.update();
+        sleep(1000);
         
-        if (side == TeamPropSensors.TeamPropLocation.LEFT) {
+        if (side.equals("left")) {
             drive.TurnTo(90);
             sleep(500);
 
             drive.DriveForward(LeftAdjust);
-        } else if (side == TeamPropSensors.TeamPropLocation.RIGHT) {
+        } else if (side.equals("right")) {
             drive.TurnTo(-90);
             sleep(500);
 
@@ -61,14 +63,14 @@ public abstract class SplitAutonomous extends LinearOpMode {
         sleep(500);
 
         trap.Open();
-        sleep(500);
+        sleep(1000);
 
         trap.Close();
         sleep(500);
 
-        if (side == TeamPropSensors.TeamPropLocation.LEFT) {
+        if (side.equals("left")) {
             drive.DriveLeft(MoveBackLeft);
-        } else if (side == TeamPropSensors.TeamPropLocation.RIGHT) {
+        } else if (side.equals("right")) {
             drive.DriveRight(MoveBackRight);
         } else {
             drive.DriveBackward(MoveBackStraight);
@@ -83,9 +85,9 @@ public abstract class SplitAutonomous extends LinearOpMode {
             sleep(10000);
         }
 
-        if (side == TeamPropSensors.TeamPropLocation.LEFT) {
+        if (side.equals("left")) {
             drive.DriveBackward(ParkMove1Straight);
-        } else if (side == TeamPropSensors.TeamPropLocation.RIGHT) {
+        } else if (side.equals("right")) {
             drive.DriveForward(ParkMove1Straight);
         } else {
             drive.DriveRight(ParkMove1Strafe);
@@ -96,18 +98,18 @@ public abstract class SplitAutonomous extends LinearOpMode {
             return;
         }
 
-        if (side == TeamPropSensors.TeamPropLocation.LEFT) {
+        if (side.equals("left")) {
             drive.DriveRight(ParkMove2Strafe);
-        } else if (side == TeamPropSensors.TeamPropLocation.RIGHT) {
+        } else if (side.equals("right")) {
             drive.DriveLeft(ParkMove2Strafe);
         } else {
             drive.DriveForward(ParkMove2Straight);
         }
         sleep(500);
 
-        if (side == TeamPropSensors.TeamPropLocation.LEFT) {
+        if (side.equals("left")) {
             drive.DriveBackward(ParkMove3Straight);
-        } else if (side == TeamPropSensors.TeamPropLocation.RIGHT) {
+        } else if (side.equals("right")) {
             drive.DriveForward(ParkMove3Straight);
         } else {
             drive.DriveRight(ParkMove3Strafe);
@@ -145,7 +147,9 @@ public abstract class SplitAutonomous extends LinearOpMode {
     }
 
     public void initialize() {
-        drive = new DriveTrain(this, hardwareMap);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        drive = new DriveTrain(this, hardwareMap, telemetry);
         trap = new Trapdoor(hardwareMap);
         claw = new Claw(hardwareMap);
         sensors = new TeamPropSensors(hardwareMap);

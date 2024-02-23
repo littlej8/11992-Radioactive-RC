@@ -26,7 +26,7 @@ public class SplitTeleOp extends LinearOpMode {
     }
 
     public void initialize() {
-        drive = new DriveTrain(this, hardwareMap);
+        drive = new DriveTrain(this, hardwareMap, telemetry);
         lift = new Lift(hardwareMap);
         drone = new DroneLauncher(hardwareMap);
     }

@@ -7,21 +7,44 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class DriveTrain {
     private final LinearOpMode opMode;
     private final DcMotor fl, fr, bl, br;
     private final IMU imu;
+    private final Telemetry telemetry;
     public static double DRIVE_SPEED = 0.2, TURN_SPEED = 0.1, TURN_TOLERANCE = 5.0;
 
-    public DriveTrain(LinearOpMode opMode, HardwareMap hwMap) {
+    public DriveTrain(LinearOpMode opMode, HardwareMap hwMap, Telemetry telemetry) {
         this.opMode = opMode;
+        this.telemetry = telemetry;
 
         this.fl = hwMap.get(DcMotor.class, "Frontleft");
         this.fr = hwMap.get(DcMotor.class, "Frontright");
         this.bl = hwMap.get(DcMotor.class, "Backleft");
         this.br = hwMap.get(DcMotor.class, "Backright");
+
+        this.fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        this.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        this.fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        this.fl.setDirection(DcMotor.Direction.REVERSE);
+        this.fr.setDirection(DcMotor.Direction.REVERSE);
+        this.bl.setDirection(DcMotor.Direction.FORWARD);
+        this.br.setDirection(DcMotor.Direction.FORWARD);
 
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
@@ -57,10 +80,10 @@ public class DriveTrain {
         drive(-amount, -amount, amount, amount);
     }
 
-    public void TurnTo(double target) {
-        target = Math.toRadians(target);
+    public void TurnTo(double deg_target) {
+        double target = Math.toRadians(deg_target);
 
-        double current = Math.toRadians(angleWrap(GetOrientation()));
+        double current = angleWrap(Math.toRadians(GetOrientation()));
         double error = target - current;
 
         if (error > 0) {
@@ -77,9 +100,15 @@ public class DriveTrain {
             return;
         }
 
-        while (opMode.opModeIsActive() && error > TURN_TOLERANCE) {
-            current = Math.toRadians(angleWrap(GetOrientation()));
+        while (opMode.opModeIsActive() && Math.toDegrees(error) > TURN_TOLERANCE) {
+            current = angleWrap(Math.toRadians(GetOrientation()));
             error = target - current;
+
+            telemetry.addData("TurnTo Target: ", Math.toDegrees(target));
+            telemetry.addData("TurnTo Current: ", Math.toDegrees(current));
+            telemetry.addData("TurnTo Error: ", Math.toDegrees(error));
+            telemetry.update();
+
             opMode.idle();
         }
 
@@ -121,7 +150,7 @@ public class DriveTrain {
         this.bl.setPower(DRIVE_SPEED);
         this.br.setPower(DRIVE_SPEED);
 
-        while (opMode.opModeIsActive() && (this.fl.isBusy() || this.fr.isBusy() || this.bl.isBusy() || this.br.isBusy())) {
+        while (opMode.opModeIsActive() && (this.fl.isBusy() && this.fr.isBusy() && this.bl.isBusy() && this.br.isBusy())) {
             opMode.idle();
         }
 
