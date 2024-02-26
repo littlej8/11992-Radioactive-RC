@@ -1,22 +1,25 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Claw {
-    private final Servo claw;
+    private final CRServo claw;
+    private final DcMotor arm;
 
     public static double OPENED = 1.0, CLOSED = 0.0;
 
     public Claw(HardwareMap hwMap) {
-        claw = hwMap.get(Servo.class, "Claw");
+        claw = hwMap.get(CRServo.class, "Claw");
+        arm = hwMap.get(DcMotor.class, "Arm");
     }
 
     public void Open() {
-        claw.setPosition(OPENED);
+        claw.setPower(OPENED);
     }
 
     public void Close() {
-        claw.setPosition(CLOSED);
+        claw.setPower(CLOSED);
     }
 }

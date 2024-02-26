@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.*;
 
-@TeleOp
+@TeleOp(name="Junior's New Groove")
 public class SplitTeleOp extends LinearOpMode {
     private DriveTrain drive;
     private Lift lift;

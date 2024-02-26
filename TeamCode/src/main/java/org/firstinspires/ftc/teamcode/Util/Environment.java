@@ -81,6 +81,7 @@ public class Environment {
         public static double TURN_TOLERANCE = 5.0;
     }
 
+    @Config
     public static class TeleOp {
         public static double WHEEL_POWER = 0.5;
         public static double ARM_POWER = 1;

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -10,6 +11,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+@Config
 public class DriveTrain {
     private final LinearOpMode opMode;
     private final DcMotor fl, fr, bl, br;
@@ -55,8 +57,8 @@ public class DriveTrain {
 
     public void DriveTeleOp(Gamepad driver) {
         double x = -driver.left_stick_x;
-        double y = driver.left_stick_y;
-        double turn = driver.right_stick_x / 2; // half turn speed
+        double y = -driver.left_stick_y;
+        double turn = -driver.right_stick_x / 2; // half turn speed
 
         this.fl.setPower((-turn + (y + x)) * DRIVE_SPEED);
         this.fr.setPower((turn + (y + x)) * DRIVE_SPEED);

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 public class DroneLauncher {
     private final Servo drone;
 
-    public static double LAUNCH = 1.0, PRIMED = 0.0;
+    public static double LAUNCH = 0.5, PRIMED = 0.0;
 
     public DroneLauncher(HardwareMap hwMap) {
         drone = hwMap.get(Servo.class, "DroneLauncher");
