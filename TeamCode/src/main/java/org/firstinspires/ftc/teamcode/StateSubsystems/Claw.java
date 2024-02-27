@@ -13,9 +13,9 @@ public class Claw {
 
     public static double ARM_POWER = 0.1, TELEOP_ARM_SPEED = 2;
     public static double DROP = -0.01, GRIP = 0.05;
-    public static double PULLED_IN = 0, GRABBING = 88;
+    public static int PULLED_IN = 0, GRABBING = 88;
 
-    public double current_arm_target = PULLED_IN;
+    public int current_arm_target = PULLED_IN;
 
     public Claw(HardwareMap hwMap) {
         claw = hwMap.get(CRServo.class, "Claw");

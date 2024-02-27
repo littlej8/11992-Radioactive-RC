@@ -20,9 +20,16 @@ public class DriveTrain {
     public static double DRIVE_SPEED = 0.2, TURN_SPEED = 0.1, TURN_TOLERANCE = 5.0;
     public static double TELEOP_SPEED = 0.5, TELEOP_TURN_MULT = 0.5;
 
-    public DriveTrain(LinearOpMode opMode, HardwareMap hwMap, Telemetry telemetry) {
+    private double turn_target;
+    private int fl_move_target;
+    private int fr_move_target;
+    private int bl_move_target;
+    private int br_move_target;
+
+    public DriveTrain(LinearOpMode opMode) {
         this.opMode = opMode;
-        this.telemetry = telemetry;
+        this.telemetry = opMode.telemetry;
+        HardwareMap hwMap = opMode.hardwareMap;
 
         this.fl = hwMap.get(DcMotor.class, "Frontleft");
         this.fr = hwMap.get(DcMotor.class, "Frontright");
@@ -67,60 +74,6 @@ public class DriveTrain {
         this.br.setPower((turn + (y - x)) * TELEOP_SPEED);
     }
 
-    public void DriveForward(double amount) {
-        drive(amount, amount, amount, amount);
-    }
-
-    public void DriveBackward(double amount) {
-        drive(-amount, -amount, -amount, -amount);
-    }
-
-    public void DriveLeft(double amount) {
-        drive(amount, amount, -amount, -amount);
-    }
-
-    public void DriveRight(double amount) {
-        drive(-amount, -amount, amount, amount);
-    }
-
-    public void TurnTo(double deg_target) {
-        double target = Math.toRadians(deg_target);
-
-        double current = angleWrap(Math.toRadians(GetOrientation()));
-        double error = target - current;
-
-        if (error > 0) {
-            this.fl.setPower(-TURN_SPEED);
-            this.fr.setPower(TURN_SPEED);
-            this.bl.setPower(-TURN_SPEED);
-            this.br.setPower(TURN_SPEED);
-        } else if (error < 0) {
-            this.fl.setPower(TURN_SPEED);
-            this.fr.setPower(-TURN_SPEED);
-            this.bl.setPower(TURN_SPEED);
-            this.br.setPower(-TURN_SPEED);
-        } else {
-            return;
-        }
-
-        while (opMode.opModeIsActive() && Math.toDegrees(error) > TURN_TOLERANCE) {
-            current = angleWrap(Math.toRadians(GetOrientation()));
-            error = target - current;
-
-            telemetry.addData("TurnTo Target: ", Math.toDegrees(target));
-            telemetry.addData("TurnTo Current: ", Math.toDegrees(current));
-            telemetry.addData("TurnTo Error: ", Math.toDegrees(error));
-            telemetry.update();
-
-            opMode.idle();
-        }
-
-        this.fl.setPower(0.0);
-        this.fr.setPower(0.0);
-        this.bl.setPower(0.0);
-        this.br.setPower(0.0);
-    }
-
     private double angleWrap(double radians) {
         while (radians > Math.PI) {
             radians -= 2 * Math.PI;
@@ -132,40 +85,95 @@ public class DriveTrain {
         return radians;
     }
 
-    private void drive(double fl, double fr, double bl, double br) {
-        int fl_target = (int)(this.fl.getCurrentPosition() + fl);
-        int fr_target = (int)(this.fr.getCurrentPosition() + fr);
-        int bl_target = (int)(this.bl.getCurrentPosition() + bl);
-        int br_target = (int)(this.br.getCurrentPosition() + br);
+    private void UpdateTurn() {
+        double current = angleWrap(Math.toRadians(GetOrientation()));
+        double error = turn_target - current;
 
-        this.fl.setTargetPosition(fl_target);
-        this.fr.setTargetPosition(fr_target);
-        this.bl.setTargetPosition(bl_target);
-        this.br.setTargetPosition(br_target);
+        telemetry.addData("TurnTo Target: ", Math.toDegrees(turn_target));
+        telemetry.addData("TurnTo Current: ", Math.toDegrees(current));
+        telemetry.addData("TurnTo Error: ", Math.toDegrees(error));
+        telemetry.update();
 
-        this.fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        this.fl.setPower(DRIVE_SPEED);
-        this.fr.setPower(DRIVE_SPEED);
-        this.bl.setPower(DRIVE_SPEED);
-        this.br.setPower(DRIVE_SPEED);
-
-        while (opMode.opModeIsActive() && (this.fl.isBusy() && this.fr.isBusy() && this.bl.isBusy() && this.br.isBusy())) {
-            opMode.idle();
+        if (Math.toDegrees(error) > TURN_TOLERANCE) {
+            this.fl.setPower(-TURN_SPEED);
+            this.fr.setPower(TURN_SPEED);
+            this.bl.setPower(-TURN_SPEED);
+            this.br.setPower(TURN_SPEED);
+        } else if (Math.toDegrees(error) < TURN_TOLERANCE) {
+            this.fl.setPower(TURN_SPEED);
+            this.fr.setPower(-TURN_SPEED);
+            this.bl.setPower(TURN_SPEED);
+            this.br.setPower(-TURN_SPEED);
+        } else {
+            this.fl.setPower(0);
+            this.fr.setPower(0);
+            this.bl.setPower(0);
+            this.br.setPower(0);
         }
+    }
 
-        this.fl.setPower(0.0);
-        this.fr.setPower(0.0);
-        this.bl.setPower(0.0);
-        this.br.setPower(0.0);
-        
-        this.fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    private void UpdateMove() {
+        if (this.fl.isBusy() && this.fr.isBusy() && this.bl.isBusy() && this.br.isBusy()) {
+            this.fl.setTargetPosition(fl_move_target);
+            this.fr.setTargetPosition(fr_move_target);
+            this.bl.setTargetPosition(bl_move_target);
+            this.br.setTargetPosition(br_move_target);
+
+            this.fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            this.fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            this.bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            this.br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            this.fl.setPower(DRIVE_SPEED);
+            this.fr.setPower(DRIVE_SPEED);
+            this.bl.setPower(DRIVE_SPEED);
+            this.br.setPower(DRIVE_SPEED);
+        } else {
+            this.fl.setPower(0.0);
+            this.fr.setPower(0.0);
+            this.bl.setPower(0.0);
+            this.br.setPower(0.0);
+
+            this.fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            this.fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            this.bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            this.br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public void periodic() {
+        if (turn_target == 0) {
+            UpdateMove();
+        } else {
+            UpdateTurn();
+        }
+    }
+
+    public void ScheduleDriveForward(double amount) {
+        ScheduleDrive(amount, amount, amount, amount);
+    }
+
+    public void ScheduleDriveBackward(double amount) {
+        ScheduleDrive(-amount, -amount, -amount, -amount);
+    }
+
+    public void ScheduleDriveLeft(double amount) {
+        ScheduleDrive(amount, amount, -amount, -amount);
+    }
+
+    public void ScheduleDriveRight(double amount) {
+        ScheduleDrive(-amount, -amount, amount, amount);
+    }
+
+    public void ScheduleTurnTo(double deg_target) {
+        turn_target = Math.toRadians(deg_target);
+    }
+
+    private void ScheduleDrive(double fl, double fr, double bl, double br) {
+        fl_move_target = (int)(this.fl.getCurrentPosition() + fl);
+        fr_move_target = (int)(this.fr.getCurrentPosition() + fr);
+        bl_move_target = (int)(this.bl.getCurrentPosition() + bl);
+        br_move_target = (int)(this.br.getCurrentPosition() + br);
     }
 
     public void ResetOrientation() {
