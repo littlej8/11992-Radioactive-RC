@@ -10,6 +10,8 @@ public class TeamPropSensors {
 
     public static double LIGHT_SENSITIVITY = 30, LEFT_BOUND = 145, RIGHT_BOUND = 170;
 
+    private String side = "front";
+
     public TeamPropSensors(HardwareMap hwMap) {
         left = hwMap.get(ColorRangeSensor.class, "Left Sensor");
         right = hwMap.get(ColorRangeSensor.class, "Right Sensor");
@@ -18,8 +20,23 @@ public class TeamPropSensors {
         right.setGain(2);
     }
 
-    public String CheckSensors() {
-        String ret = "front";
+    public String getSide() {
+        return side;
+    }
+
+    public void front() {
+        return side.equals("front");
+    }
+
+    public void left() {
+        return side.equals("left");
+    }
+
+    public void right() {
+        return side.equals("right");
+    }
+
+    public void CheckSensors() {
         int left_count = 0;
         int right_count = 0;
 
@@ -40,12 +57,10 @@ public class TeamPropSensors {
             }
 
             if (left_count >= LIGHT_SENSITIVITY) {
-                ret = "left";
+                side = "left";
             } else if (right_count >= LIGHT_SENSITIVITY) {
-                ret = "right";
+                side = "right";
             }
         }
-
-        return ret;
     }
 }

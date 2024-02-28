@@ -109,6 +109,8 @@ public class DriveTrain {
             this.fr.setPower(0);
             this.bl.setPower(0);
             this.br.setPower(0);
+
+            turn_target = 0;
         }
     }
 
@@ -138,7 +140,20 @@ public class DriveTrain {
             this.fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             this.bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             this.br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            fl_move_target = 0;
+            fr_move_target = 0;
+            bl_move_target = 0;
+            br_move_target = 0;
         }
+    }
+
+    public boolean isActive() {
+        return (turn_target == 0) &&
+                (fl_move_target == 0) &&
+                (fr_move_target == 0) &&
+                (bl_move_target == 0) &&
+                (br_move_target == 0);
     }
 
     public void periodic() {

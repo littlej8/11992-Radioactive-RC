@@ -15,7 +15,7 @@ import java.util.TimerTask;
 
 @TeleOp
 @Disabled
-public class MainTeleOp extends LinearOpMode {
+public class MonolithicTeleOp extends LinearOpMode {
     private DcMotor FrontLeft;
     private DcMotor FrontRight;
     private DcMotor BackLeft;

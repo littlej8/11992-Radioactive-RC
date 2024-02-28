@@ -24,6 +24,9 @@ public class Claw {
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm.setDirection(DcMotor.Direction.REVERSE);
+
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setTargetPosition(current_arm_target);
     }
 
     public void UpdateTeleOp(Gamepad controller) {
@@ -41,8 +44,6 @@ public class Claw {
 
     public void periodic() {
         arm.setTargetPosition(current_arm_target);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setPower(ARM_POWER);
     }
 
     public void PullArmIn() {
