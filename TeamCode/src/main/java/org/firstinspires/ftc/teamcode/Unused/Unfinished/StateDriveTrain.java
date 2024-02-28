@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 /** @noinspection ALL*/
 @Config
-public class DriveTrain {
+public class StateDriveTrain {
     private final LinearOpMode opMode;
     private final DcMotor fl, fr, bl, br;
     private final IMU imu;
@@ -27,7 +27,7 @@ public class DriveTrain {
     private int bl_move_target;
     private int br_move_target;
 
-    public DriveTrain(LinearOpMode opMode) {
+    public StateDriveTrain(LinearOpMode opMode) {
         this.opMode = opMode;
         this.telemetry = opMode.telemetry;
         HardwareMap hwMap = opMode.hardwareMap;

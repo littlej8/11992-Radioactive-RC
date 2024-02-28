@@ -12,6 +12,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
     private Claw claw;
     private TeamPropSensors sensors;
 
+    private boolean FarSide;
     private double MoveUp;
     private double LeftAdjust;
     private double RightAdjust;
@@ -64,6 +65,8 @@ public abstract class SplitAutonomous extends LinearOpMode {
         sleep(500);
 
         trap.Open();
+        drive.DriveForward(25);
+        drive.DriveBackward(25);
         sleep(1000);
 
         trap.Close();
@@ -80,7 +83,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
 
         drive.TurnTo(0);
 
-        if (ParkMove2Straight == 0) {
+        if (!FarSide) {
             sleep(500);
         } else {
             sleep(10000);
@@ -95,7 +98,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
         }
         sleep(500);
 
-        if (ParkMove2Straight == 0) {
+        if (!FarSide) {
             return;
         }
 
@@ -117,7 +120,8 @@ public abstract class SplitAutonomous extends LinearOpMode {
         }
     }
 
-    public void init_vars(double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe) {
+    public void init_vars(boolean far_side, double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe) {
+        FarSide = far_side;
         MoveUp = move_up;
         LeftAdjust = left_adjust;
         RightAdjust = right_adjust;
@@ -130,7 +134,8 @@ public abstract class SplitAutonomous extends LinearOpMode {
         ParkMove1Strafe = park_move_1_strafe;
     }
 
-    public void init_vars(double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double middle_move_1_straight, double middle_move_1_strafe, double middle_move_2_straight, double middle_move_2_strafe, double middle_move_3_straight, double middle_move_3_strafe) {
+    public void init_vars(boolean far_side, double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double middle_move_1_straight, double middle_move_1_strafe, double middle_move_2_straight, double middle_move_2_strafe, double middle_move_3_straight, double middle_move_3_strafe) {
+        FarSide = far_side;
         MoveUp = move_up;
         LeftAdjust = left_adjust;
         RightAdjust = right_adjust;
@@ -154,5 +159,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
         trap = new Trapdoor(hardwareMap);
         claw = new Claw(hardwareMap);
         sensors = new TeamPropSensors(hardwareMap);
+
+        claw.GripClaw();
     }
 }

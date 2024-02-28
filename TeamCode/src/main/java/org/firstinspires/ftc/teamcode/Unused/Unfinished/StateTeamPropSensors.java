@@ -5,14 +5,14 @@ import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
-public class TeamPropSensors {
+public class StateTeamPropSensors {
     private final ColorRangeSensor left, right;
 
     public static double LIGHT_SENSITIVITY = 30, LEFT_BOUND = 145, RIGHT_BOUND = 170;
 
     private String side = "front";
 
-    public TeamPropSensors(HardwareMap hwMap) {
+    public StateTeamPropSensors(HardwareMap hwMap) {
         left = hwMap.get(ColorRangeSensor.class, "Left Sensor");
         right = hwMap.get(ColorRangeSensor.class, "Right Sensor");
 
@@ -24,15 +24,15 @@ public class TeamPropSensors {
         return side;
     }
 
-    public void front() {
+    public boolean front() {
         return side.equals("front");
     }
 
-    public void left() {
+    public boolean left() {
         return side.equals("left");
     }
 
-    public void right() {
+    public boolean right() {
         return side.equals("right");
     }
 

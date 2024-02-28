@@ -12,7 +12,7 @@ public class Claw {
     private final DcMotor arm;
 
     public static double ARM_POWER = 0.1, TELEOP_ARM_SPEED = 2;
-    public static double DROP = -0.01, GRIP = 0.05;
+    public static double DROP = -0.1, GRIP = 0.1;
     public static int PULLED_IN = 0, GRABBING = 88;
 
     public int current_arm_target = PULLED_IN;
@@ -37,6 +37,12 @@ public class Claw {
             DropClaw();
         } else if (controller.right_trigger > 0) {
             GripClaw();
+        }
+
+        if (-controller.left_stick_y > 0) {
+            current_arm_target += TELEOP_ARM_SPEED;
+        } else if (-controller.left_stick_y < 0) {
+            current_arm_target -= TELEOP_ARM_SPEED;
         }
 
         periodic();

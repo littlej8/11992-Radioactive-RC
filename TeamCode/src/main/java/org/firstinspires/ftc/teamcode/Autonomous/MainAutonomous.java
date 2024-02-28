@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import org.firstinspires.ftc.teamcode.Util.Environment;
-import org.firstinspires.ftc.teamcode.Util.MecanumOdometryController;
+//import org.firstinspires.ftc.teamcode.Util.MecanumOdometryController;
 
 public abstract class MainAutonomous extends LinearOpMode {
     private DcMotor FrontLeft;
@@ -28,7 +28,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     
     private IMU imu;
 
-    private MecanumOdometryController RobotPosition;
+    //private MecanumOdometryController RobotPosition;
 
     private double MoveUp;
     private double LeftAdjust;

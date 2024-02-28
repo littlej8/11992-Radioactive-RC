@@ -4,15 +4,13 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Subsystems.Trapdoor;
-import org.firstinspires.ftc.teamcode.StateSubsystems.TeamPropSensors;
 import org.firstinspires.ftc.teamcode.StateSubsystems.Claw;
-import org.firstinspires.ftc.teamcode.StateSubsystems.DriveTrain;
 
 public abstract class StateAutonomous extends LinearOpMode {
-    private DriveTrain drive;
+    private StateDriveTrain drive;
     private Trapdoor trap;
     private Claw claw;
-    private TeamPropSensors sensors;
+    private StateTeamPropSensors sensors;
 
     private double MoveUp;
     private double LeftAdjust;
@@ -133,27 +131,27 @@ public abstract class StateAutonomous extends LinearOpMode {
     }
 
     public boolean MoveForward() {
-        
+        return true;
     }
 
     public boolean PlaceProp() {
-
+        return true;
     }
 
     public boolean GoBack() {
-
+        return true;
     }
 
     public boolean Park1() {
-
+        return true;
     }
 
     public boolean Park2() {
-        
+        return true;
     }
 
     public boolean Park3() {
-
+        return true;
     }
 
     public void init_vars(double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe) {
@@ -189,9 +187,9 @@ public abstract class StateAutonomous extends LinearOpMode {
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        drive = new DriveTrain(this, hardwareMap, telemetry);
+        drive = new StateDriveTrain(this);
         trap = new Trapdoor(hardwareMap);
         claw = new Claw(hardwareMap);
-        sensors = new TeamPropSensors(hardwareMap);
+        sensors = new StateTeamPropSensors(hardwareMap);
     }
 }

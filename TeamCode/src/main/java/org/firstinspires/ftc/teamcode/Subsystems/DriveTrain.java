@@ -18,7 +18,7 @@ public class DriveTrain {
     private final IMU imu;
     private final Telemetry telemetry;
     public static double DRIVE_SPEED = 0.2, TURN_SPEED = 0.1, TURN_TOLERANCE = 5.0;
-    public static double TELEOP_SPEED = 0.5, TELEOP_TURN_MULT = 0.5;
+    public static double TELEOP_SPEED = 0.3, TELEOP_TURN_MULT = 0.75;
 
     public DriveTrain(LinearOpMode opMode, HardwareMap hwMap, Telemetry telemetry) {
         this.opMode = opMode;
@@ -83,11 +83,13 @@ public class DriveTrain {
         drive(-amount, -amount, amount, amount);
     }
 
-    public void TurnTo(double deg_target) {
-        double target = Math.toRadians(deg_target);
-
-        double current = angleWrap(Math.toRadians(GetOrientation()));
+    public void TurnTo(double target) {
+        double current = GetOrientation();
         double error = target - current;
+
+        telemetry.addData("Error: ", error);
+        telemetry.update();
+        opMode.sleep(1000);
 
         if (error > 0) {
             this.fl.setPower(-TURN_SPEED);
@@ -103,13 +105,13 @@ public class DriveTrain {
             return;
         }
 
-        while (opMode.opModeIsActive() && Math.toDegrees(error) > TURN_TOLERANCE) {
-            current = angleWrap(Math.toRadians(GetOrientation()));
+        while (opMode.opModeIsActive() && Math.abs(error) > TURN_TOLERANCE) {
+            current = GetOrientation();
             error = target - current;
 
-            telemetry.addData("TurnTo Target: ", Math.toDegrees(target));
-            telemetry.addData("TurnTo Current: ", Math.toDegrees(current));
-            telemetry.addData("TurnTo Error: ", Math.toDegrees(error));
+            telemetry.addData("TurnTo Target: ", target);
+            telemetry.addData("TurnTo Current: ", current);
+            telemetry.addData("TurnTo Error: ", error);
             telemetry.update();
 
             opMode.idle();
