@@ -12,7 +12,7 @@ public class OldClaw {
 
     public static double ARM_POWER = 0.1;
     public static double DROP = -0.01, GRIP = 0.05;
-    public static double PULLED_IN = 0, GRABBING = 88;
+    public static int PULLED_IN = 0, GRABBING = 88;
 
     public OldClaw(HardwareMap hwMap) {
         claw = hwMap.get(CRServo.class, "Claw");
