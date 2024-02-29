@@ -15,7 +15,8 @@ public class Claw {
     public static double DROP = -0.1, GRIP = 0.1;
     public static int PULLED_IN = 0, GRABBING = 88;
 
-    public int current_arm_target = PULLED_IN;
+    private int current_arm_target = PULLED_IN;
+    private boolean claw_gripping = false;
 
     public Claw(HardwareMap hwMap) {
         claw = hwMap.get(CRServo.class, "Claw");
@@ -25,8 +26,9 @@ public class Claw {
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm.setDirection(DcMotor.Direction.REVERSE);
 
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setTargetPosition(current_arm_target);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(ARM_POWER);
     }
 
     public void UpdateTeleOp(Gamepad controller) {
@@ -37,6 +39,8 @@ public class Claw {
             DropClaw();
         } else if (controller.right_trigger > 0) {
             GripClaw();
+        } else if (!claw_gripping) {
+            StopClaw();
         }
 
         if (-controller.left_stick_y > 0) {
@@ -50,21 +54,32 @@ public class Claw {
 
     public void periodic() {
         arm.setTargetPosition(current_arm_target);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(ARM_POWER);
     }
 
     public void PullArmIn() {
         current_arm_target = PULLED_IN;
+        periodic();
     }
 
     public void MoveArmToGrab() {
         current_arm_target = GRABBING;
+        periodic();
     }
 
     public void GripClaw() {
         claw.setPower(GRIP);
+        claw_gripping = true;
     }
 
     public void DropClaw() {
         claw.setPower(DROP);
+        claw_gripping = false;
+    }
+
+    public void StopClaw() {
+        claw.setPower(0.0);
+        claw_gripping = false;
     }
 }

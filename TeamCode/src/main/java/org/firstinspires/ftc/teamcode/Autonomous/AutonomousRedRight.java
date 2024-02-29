@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Util.Environment;
 
 @Autonomous(preselectTeleOp="Junior's New Groove")
-public class AutonomousRedRightMiddle extends SplitAutonomous {
+public class AutonomousRedRight extends SplitAutonomous {
     public void on_init() {
         super.init_vars(false,
                         Environment.Auto.MovementCounts.MOVE_UP,

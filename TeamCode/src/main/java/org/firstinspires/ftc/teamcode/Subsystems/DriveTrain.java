@@ -67,20 +67,24 @@ public class DriveTrain {
         this.br.setPower((turn + (y - x)) * TELEOP_SPEED);
     }
 
+    public DriveForward(double amount, double power) {
+        drive(amount, amount, amount, amount, power)
+    }
+
     public void DriveForward(double amount) {
-        drive(amount, amount, amount, amount);
+        drive(amount, amount, amount, amount, DRIVE_SPEED);
     }
 
     public void DriveBackward(double amount) {
-        drive(-amount, -amount, -amount, -amount);
+        drive(-amount, -amount, -amount, -amount, DRIVE_SPEED);
     }
 
     public void DriveLeft(double amount) {
-        drive(amount, amount, -amount, -amount);
+        drive(amount, amount, -amount, -amount, DRIVE_SPEED);
     }
 
     public void DriveRight(double amount) {
-        drive(-amount, -amount, amount, amount);
+        drive(-amount, -amount, amount, amount, DRIVE_SPEED);
     }
 
     public void TurnTo(double target) {
@@ -134,7 +138,7 @@ public class DriveTrain {
         return radians;
     }
 
-    private void drive(double fl, double fr, double bl, double br) {
+    private void drive(double fl, double fr, double bl, double br, double power) {
         int fl_target = (int)(this.fl.getCurrentPosition() + fl);
         int fr_target = (int)(this.fr.getCurrentPosition() + fr);
         int bl_target = (int)(this.bl.getCurrentPosition() + bl);
@@ -150,10 +154,10 @@ public class DriveTrain {
         this.bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        this.fl.setPower(DRIVE_SPEED);
-        this.fr.setPower(DRIVE_SPEED);
-        this.bl.setPower(DRIVE_SPEED);
-        this.br.setPower(DRIVE_SPEED);
+        this.fl.setPower(power);
+        this.fr.setPower(power);
+        this.bl.setPower(power);
+        this.br.setPower(power);
 
         while (opMode.opModeIsActive() && (this.fl.isBusy() && this.fr.isBusy() && this.bl.isBusy() && this.br.isBusy())) {
             opMode.idle();

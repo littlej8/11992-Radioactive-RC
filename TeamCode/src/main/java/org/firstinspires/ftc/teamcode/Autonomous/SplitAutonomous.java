@@ -13,6 +13,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
     private TeamPropSensors sensors;
 
     private boolean FarSide;
+    private boolean Red;
     private double MoveUp;
     private double LeftAdjust;
     private double RightAdjust;
@@ -38,14 +39,17 @@ public abstract class SplitAutonomous extends LinearOpMode {
 
         waitForStart();
 
+        // go up to team prop
         drive.DriveForward(MoveUp);
         sleep(500);
 
+        // check color sensors for where team prop is
         String side = sensors.CheckSensors();
         telemetry.addData("Side: ", side);
         telemetry.update();
         sleep(1000);
         
+        // turn to pixel and adjust
         if (side.equals("left")) {
             drive.TurnTo(90);
             sleep(500);
@@ -64,60 +68,61 @@ public abstract class SplitAutonomous extends LinearOpMode {
         }
         sleep(500);
 
+        // drop pixel and push onto line
         trap.Open();
         drive.DriveForward(25);
         drive.DriveBackward(25);
         sleep(1000);
 
+        // close trap turn back straight
         trap.Close();
-        sleep(500);
-
-        if (side.equals("left")) {
-            drive.DriveLeft(MoveBackLeft);
-        } else if (side.equals("right")) {
-            drive.DriveRight(MoveBackRight);
-        } else {
-            drive.DriveBackward(MoveBackStraight);
-        }
-        sleep(500);
-
         drive.TurnTo(0);
+        sleep(500);
 
+        // go back
+        drive.DriveBackward(MoveBackStraight);
+        sleep(500);
+
+        // turn to face board
+        drive.TurnTo((Red) ? -90 : 90);
+
+        // wait for alliance partner if far side
         if (!FarSide) {
             sleep(500);
         } else {
             sleep(10000);
         }
 
-        if (side.equals("left")) {
-            drive.DriveBackward(ParkMove1Straight);
-        } else if (side.equals("right")) {
-            drive.DriveForward(ParkMove1Straight);
+        // move up to board
+        drive.DriveForward(ParkMove1Straight);
+        sleep(500);
+
+        // line up with board
+        if (Red) {
+            drive.DriveLeft(ParkMove2Strafe / 2);
         } else {
-            drive.DriveRight(ParkMove1Strafe);
+            drive.DriveRight(ParkMove2Strafe / 2);
         }
         sleep(500);
 
-        if (!FarSide) {
-            return;
-        }
-
-        if (side.equals("left")) {
-            drive.DriveRight(ParkMove2Strafe);
-        } else if (side.equals("right")) {
-            drive.DriveLeft(ParkMove2Strafe);
-        } else {
-            drive.DriveForward(ParkMove2Straight);
-        }
+        // make sure still turned correctly
+        drive.TurnTo((Red) ? -90 : 90); 
         sleep(500);
 
-        if (side.equals("left")) {
-            drive.DriveBackward(ParkMove3Straight);
-        } else if (side.equals("right")) {
-            drive.DriveForward(ParkMove3Straight);
-        } else {
-            drive.DriveRight(ParkMove3Strafe);
-        }
+        // move really slow to not ram board
+        drive.DriveForward(50, 0.05);
+        sleep(500);
+
+        // put arm on board
+        claw.MoveArmToGrab();
+        sleep(500);
+
+        // drop pixel
+        claw.DropClaw();
+        sleep(500);
+
+        // retract arm
+        claw.PullArmIn();
     }
 
     public void init_vars(boolean far_side, double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe) {
@@ -132,6 +137,8 @@ public abstract class SplitAutonomous extends LinearOpMode {
         MoveBackRight = move_back_right;
         ParkMove1Straight = park_move_1_straight;
         ParkMove1Strafe = park_move_1_strafe;
+
+        Red = (ParkMove1Straight > 0);
     }
 
     public void init_vars(boolean far_side, double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double middle_move_1_straight, double middle_move_1_strafe, double middle_move_2_straight, double middle_move_2_strafe, double middle_move_3_straight, double middle_move_3_strafe) {
@@ -150,6 +157,8 @@ public abstract class SplitAutonomous extends LinearOpMode {
         ParkMove2Strafe = middle_move_2_strafe;
         ParkMove3Straight = middle_move_3_straight;
         ParkMove3Strafe = middle_move_3_strafe;
+
+        Red = (ParkMove1Straight > 0);
     }
 
     public void initialize() {
