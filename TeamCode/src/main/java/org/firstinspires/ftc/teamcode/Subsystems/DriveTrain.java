@@ -80,7 +80,7 @@ public class DriveTrain {
     }
 
     public void DriveForward(double amount, double power) {
-        drive(amount, amount, amount, amount, power)
+        drive(amount, amount, amount, amount, power);
     }
 
     public void DriveBackward(double amount) {

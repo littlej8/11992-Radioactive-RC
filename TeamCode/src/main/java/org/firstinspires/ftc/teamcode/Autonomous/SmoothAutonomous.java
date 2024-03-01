@@ -70,8 +70,8 @@ public abstract class SmoothAutonomous extends LinearOpMode {
 
         // drop pixel and push onto line
         trap.Open();
-        drive.DriveForward(25);
-        drive.DriveBackward(25);
+        drive.DriveForward(25, true);
+        drive.DriveBackward(25, true);
         sleep(1000);
 
         // close trap turn back straight
