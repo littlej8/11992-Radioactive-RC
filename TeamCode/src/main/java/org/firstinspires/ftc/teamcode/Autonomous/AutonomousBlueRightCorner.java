@@ -4,13 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Util.Environment;
 
-/**
- *    Concept for autonomous structure
- */
-@Autonomous(preselectTeleOp="MainTeleOp")
-public class AutonomousBlueRightCorner extends MainAutonomous {
+@Autonomous(preselectTeleOp="Junior's New Groove")
+@Disabled
+public class AutonomousBlueRightCorner extends SplitAutonomous {
     public void on_init() {
-        super.init_vars(Environment.Auto.MovementCounts.MOVE_UP,
+        super.init_vars(true,
+                        Environment.Auto.MovementCounts.MOVE_UP,
                         Environment.Auto.MovementCounts.LEFT_ADJUST,
                         Environment.Auto.MovementCounts.RIGHT_ADJUST,
                         Environment.Auto.MovementCounts.FRONT_ADJUST_1,

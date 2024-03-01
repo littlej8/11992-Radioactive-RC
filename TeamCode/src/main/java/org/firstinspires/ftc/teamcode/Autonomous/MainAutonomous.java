@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,11 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import org.firstinspires.ftc.teamcode.Util.Environment;
-import org.firstinspires.ftc.teamcode.Util.MecanumOdometryController;
+//import org.firstinspires.ftc.teamcode.Util.MecanumOdometryController;
 
-/**
- *    Concept for autonomous structure
- */
 public abstract class MainAutonomous extends LinearOpMode {
     private DcMotor FrontLeft;
     private DcMotor FrontRight;
@@ -30,7 +28,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     
     private IMU imu;
 
-    private MecanumOdometryController RobotPosition;
+    //private MecanumOdometryController RobotPosition;
 
     private double MoveUp;
     private double LeftAdjust;

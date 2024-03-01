@@ -1,24 +1,24 @@
-package org.firstinspires.ftc.teamcode.TeleOp;
+package org.firstinspires.ftc.teamcode.Unused.Tests;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.eventloop.opmode.*;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import org.firstinspires.ftc.teamcode.Util.Environment;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 @TeleOp
-public class MainTeleOp extends LinearOpMode {
+@Disabled
+public class FieldCentric extends LinearOpMode {
     private DcMotor FrontLeft;
     private DcMotor FrontRight;
     private DcMotor BackLeft;
     private DcMotor BackRight;
+    private IMU imu;
 
     private DcMotor Lift;
     private DcMotor Arm;
@@ -27,14 +27,7 @@ public class MainTeleOp extends LinearOpMode {
 
     private Servo ClawWrist;
     private Servo ClawGrabber;
-    private CRServo ClawGrabberCR;
     private Servo DroneLauncher;
-    
-    private boolean Manual = false;
-    private boolean ManualTimeout = false;
-    private ElapsedTime ManualTimer = new ElapsedTime();
-    private boolean RoutineRunning = false;
-    private ElapsedTime RoutineTimer = new ElapsedTime();
 
     @Override
     public void runOpMode() {
@@ -50,22 +43,9 @@ public class MainTeleOp extends LinearOpMode {
             UpdateDrone();
 
             if (gamepad2.triangle) {
-                RoutineRunning = true;
-                RoutineTimer.reset();
+                RobotRoutine(); // routine yayyyyy
             }
-            RobotRoutine();
-            
-            if (gamepad2.square && !ManualTimeout) {
-                ManualMode();
-                ManualTimeout = true;
-                ManualTimer.reset();
-            }
-            
-            if (ManualTimer.seconds() >= 0.25) {
-                ManualTimeout = false;
-            }
-            
-            telemetry.addData("Manual Mode: ", Manual);
+
             telemetry.update();
         }
     }
@@ -83,8 +63,14 @@ public class MainTeleOp extends LinearOpMode {
 
         ClawWrist = hardwareMap.get(Servo.class, "ClawX");
         ClawGrabber = hardwareMap.get(Servo.class, "ClawY");
-        ClawGrabberCR = hardwareMap.get(CRServo.class, "ClawY");
         DroneLauncher = hardwareMap.get(Servo.class, "Airplane Launcher");
+
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+
+        imu = hardwareMap.get(IMU.class, "imu");
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         FrontLeft.setDirection(DcMotor.Direction.REVERSE);
         FrontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -126,26 +112,37 @@ public class MainTeleOp extends LinearOpMode {
         ClawWrist.scaleRange(Environment.TeleOp.CLAW_WRIST_MIN, Environment.TeleOp.CLAW_WRIST_MAX);
         ClawGrabber.scaleRange(Environment.TeleOp.CLAW_GRABBER_MIN, Environment.TeleOp.CLAW_GRABBER_MAX);
     }
-    
-    private void ManualMode() {
-        //ClawWrist.scaleRange(0.0, 1.0);
-        if (!Manual) {
-            ClawGrabber.scaleRange(0.0, 1.0);
-        } else {
-            ClawGrabber.scaleRange(Environment.TeleOp.CLAW_GRABBER_MIN, Environment.TeleOp.CLAW_GRABBER_MAX);
-        }
-        Manual = !Manual;
-    }
 
     private void UpdateWheels() {
-        double horizontal = -gamepad1.left_stick_x;
-        double vertical = gamepad1.left_stick_y;
-        double pivot = gamepad1.right_stick_x / 2; // half turn speed
+        double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-        FrontLeft.setPower((-pivot + (vertical + horizontal)) * Environment.TeleOp.WHEEL_POWER);
-        FrontRight.setPower((pivot + (vertical + horizontal)) * Environment.TeleOp.WHEEL_POWER);
-        BackLeft.setPower((-pivot + (vertical - horizontal)) * Environment.TeleOp.WHEEL_POWER);
-        BackRight.setPower((pivot + (vertical - horizontal)) * Environment.TeleOp.WHEEL_POWER);
+        double x = gamepad1.left_stick_x;
+        double y = -gamepad1.left_stick_y;
+        double turn = gamepad1.right_stick_x / 2; // half turn speed
+
+        double theta = Math.atan2(y, x) + heading;
+        double power = Math.hypot(x, y) * Environment.TeleOp.WHEEL_POWER;
+
+        double sin = Math.sin(theta - Math.PI/4);
+        double cos = Math.cos(theta - Math.PI/4);
+        double max = Math.max(Math.abs(sin), Math.abs(cos));
+
+        double fl_power = power * cos/max + turn;
+        double fr_power = power * sin/max - turn;
+        double bl_power = power * sin/max + turn;
+        double br_power = power * cos/max - turn;
+
+        if ((power + Math.abs(turn)) > 1) {
+            fl_power /= power + Math.abs(turn);
+            fr_power /= power + Math.abs(turn);
+            bl_power /= power + Math.abs(turn);
+            br_power /= power + Math.abs(turn);
+        }
+
+        FrontLeft.setPower(fl_power);
+        FrontRight.setPower(fr_power);
+        BackLeft.setPower(bl_power);
+        BackRight.setPower(br_power);
     }
 
     private void UpdateArm() {
@@ -153,7 +150,7 @@ public class MainTeleOp extends LinearOpMode {
         double right_y = gamepad2.right_stick_y;
 
         if (left_y != 0) {
-            Arm.setPower(-left_y * Environment.TeleOp.ARM_POWER);
+            Arm.setPower(left_y * Environment.TeleOp.ARM_POWER);
         } else {
             Arm.setPower(0.0);
         }
@@ -174,16 +171,8 @@ public class MainTeleOp extends LinearOpMode {
 
         if (gamepad2.left_bumper) {
             ClawGrabber.setPosition(ClawGrabber.getPosition() + Environment.TeleOp.CLAW_GRABBER_SPEED);
-            ClawGrabberCR.setPower(0.025);
         } else if (gamepad2.right_bumper) {
             ClawGrabber.setPosition(ClawGrabber.getPosition() - Environment.TeleOp.CLAW_GRABBER_SPEED);
-            ClawGrabberCR.setPower(-0.1);
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    ClawGrabberCR.setPower(0.0);
-                }
-            }, 500L);
         }
     }
 
@@ -209,25 +198,16 @@ public class MainTeleOp extends LinearOpMode {
     }
 
     private void RobotRoutine() {
-        if (RoutineRunning) {
-            if (RoutineTimer.seconds() >= 0.0 && RoutineTimer.seconds() <= 0.1) {
-                ClawWrist.setPosition(0.5);
-                ClawGrabber.setPosition(0.0);
-            }
-            
-            if (RoutineTimer.seconds() >= 0.5 && RoutineTimer.seconds() <= 0.6) {
-                ClawWrist.setPosition(0.0);
-            }
-            
-            if (RoutineTimer.seconds() >= 1.0 && RoutineTimer.seconds() <= 1.1) {
-                ClawGrabber.setPosition(1.0);
-            }
-            
-            if (RoutineTimer.seconds() >= 2.0 && RoutineTimer.seconds() <= 2.1) {
-                ClawWrist.setPosition(0.5);
-                RoutineRunning = false;
-            }
-        }
+        ClawWrist.setPosition(0.5);
+        ClawGrabber.setPosition(0.0);
+
+        WheelMoveTime(15);
+        sleep(500);
+
+        ClawWrist.setPosition(0.0);
+        sleep(500);
+
+        ClawGrabber.setPosition(1.0);
     }
 
     private void WheelMoveTime(long time) {
