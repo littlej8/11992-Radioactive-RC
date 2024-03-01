@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
@@ -18,7 +18,7 @@ public class MoveMotorPIDF extends LinearOpMode {
 
     public static int target = 0;
 
-    private final double ticks_in_degree = 7000/ 180.0;
+    private final double ticks_in_degree = 435 / 180.0;
 
     private DcMotorEx arm;
 
