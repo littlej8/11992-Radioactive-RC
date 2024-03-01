@@ -94,7 +94,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
         }
 
         // move up to board
-        drive.DriveForward(ParkMove1Straight);
+        drive.DriveForward(-ParkMove1Straight);
         sleep(500);
 
         // line up with board
@@ -110,7 +110,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
         sleep(500);
 
         // move really slow to not ram board
-        drive.DriveForward(50, 0.05);
+        drive.DriveForward(150, 0.05);
         sleep(500);
 
         // put arm on board
