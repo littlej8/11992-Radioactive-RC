@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Subsystems.*;
 import org.firstinspires.ftc.teamcode.StateSubsystems.Claw;
 
+import java.util.Locale;
+
 @TeleOp(name="Junior's New Groove")
 public class SplitTeleOp extends LinearOpMode {
     private DriveTrain drive;
@@ -28,7 +30,14 @@ public class SplitTeleOp extends LinearOpMode {
             // player 2
             lift.UpdateTeleOp(gamepad2);
             claw.UpdateTeleOp(gamepad2);
+
+            //telemetry
+            UpdateTelemetry();
         }
+    }
+
+    public void UpdateTelemetry() {
+        telemetry.addData("Driver Left Controller: ", String.format(Locale.getDefault(), "(%f,%f) (%f,%f)", -gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.right_stick_y));
     }
 
     public void initialize() {

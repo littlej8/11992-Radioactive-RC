@@ -1,16 +1,20 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Subsystems.*;
 import org.firstinspires.ftc.teamcode.StateSubsystems.Claw;
 
+@Config
 public abstract class SplitAutonomous extends LinearOpMode {
     private DriveTrain drive;
     private Trapdoor trap;
     private Claw claw;
     private TeamPropSensors sensors;
+
+    public static boolean PIDSmoothing = false;
 
     private boolean FarSide;
     private boolean Red;
@@ -40,8 +44,9 @@ public abstract class SplitAutonomous extends LinearOpMode {
         waitForStart();
 
         // go up to team prop
-        drive.DriveForward(MoveUp);
+        drive.DriveForward(MoveUp, PIDSmoothing);
         sleep(500);
+        drive.TurnTo(0);
 
         // check color sensors for where team prop is
         String side = sensors.CheckSensors();
@@ -54,24 +59,24 @@ public abstract class SplitAutonomous extends LinearOpMode {
             drive.TurnTo(90);
             sleep(500);
 
-            drive.DriveForward(LeftAdjust);
+            drive.DriveForward(LeftAdjust, PIDSmoothing);
         } else if (side.equals("right")) {
             drive.TurnTo(-90);
             sleep(500);
 
-            drive.DriveForward(RightAdjust);
+            drive.DriveForward(RightAdjust, PIDSmoothing);
         } else {
-            drive.DriveLeft(FrontAdjust1);
+            drive.DriveLeft(FrontAdjust1, PIDSmoothing);
             sleep(500);
 
-            drive.DriveBackward(FrontAdjust2);
+            drive.DriveBackward(FrontAdjust2, PIDSmoothing);
         }
         sleep(500);
 
         // drop pixel and push onto line
         trap.Open();
-        drive.DriveForward(25);
-        drive.DriveBackward(25);
+        drive.DriveForward(25, PIDSmoothing);
+        drive.DriveBackward(25, PIDSmoothing);
         sleep(1000);
 
         // close trap turn back straight
@@ -80,7 +85,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
         sleep(500);
 
         // go back
-        drive.DriveBackward(MoveBackStraight);
+        drive.DriveBackward(MoveBackStraight, PIDSmoothing);
         sleep(500);
 
         // turn to face board
@@ -94,14 +99,14 @@ public abstract class SplitAutonomous extends LinearOpMode {
         }
 
         // move up to board
-        drive.DriveForward(-ParkMove1Straight);
+        drive.DriveForward(-ParkMove1Straight, PIDSmoothing);
         sleep(500);
 
         // line up with board
         if (Red) {
-            drive.DriveLeft(ParkMove2Strafe / 2);
+            drive.DriveLeft(ParkMove2Strafe / 2, PIDSmoothing);
         } else {
-            drive.DriveRight(ParkMove2Strafe / 2);
+            drive.DriveRight(ParkMove2Strafe / 2, PIDSmoothing);
         }
         sleep(500);
 
