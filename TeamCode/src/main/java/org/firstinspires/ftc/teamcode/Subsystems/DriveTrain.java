@@ -58,6 +58,8 @@ public class DriveTrain {
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
         this.imu = hwMap.get(IMU.class, "imu");
         this.imu.initialize(new IMU.Parameters(orientationOnRobot));
+
+        ResetOrientation();
     }
 
     public void DriveTeleOp(Gamepad driver) {
@@ -76,7 +78,11 @@ public class DriveTrain {
     }
 
     public void DriveForward(double amount, boolean smooth) {
-        drive_smooth(amount, amount, amount, amount, DRIVE_SPEED);
+        if (smooth) {
+            drive_smooth(amount, amount, amount, amount, DRIVE_SPEED);
+        } else {
+            drive(amount, amount, amount, amount, DRIVE_SPEED);
+        }
     }
 
     public void DriveForward(double amount, double power) {
@@ -88,7 +94,11 @@ public class DriveTrain {
     }
 
     public void DriveBackward(double amount, boolean smooth) {
-        drive_smooth(-amount, -amount, -amount, -amount, DRIVE_SPEED);
+        if (smooth) {
+            drive_smooth(-amount, -amount, -amount, -amount, DRIVE_SPEED);
+        } else {
+            drive(-amount, -amount, -amount, -amount, DRIVE_SPEED);
+        }
     }
 
     public void DriveLeft(double amount) {
@@ -96,7 +106,11 @@ public class DriveTrain {
     }
 
     public void DriveLeft(double amount, boolean smooth) {
-        drive_smooth(amount, amount, -amount, -amount, DRIVE_SPEED);
+        if (smooth) {
+            drive_smooth(amount, amount, -amount, -amount, DRIVE_SPEED);
+        } else {
+            drive(amount, amount, -amount, -amount, DRIVE_SPEED);
+        }
     }
 
     public void DriveRight(double amount) {
@@ -104,7 +118,11 @@ public class DriveTrain {
     }
 
     public void DriveRight(double amount, boolean smooth) {
-        drive_smooth(-amount, -amount, amount, amount, DRIVE_SPEED);
+        if (smooth) {
+            drive_smooth(-amount, -amount, amount, amount, DRIVE_SPEED);
+        } else {
+            drive(-amount, -amount, amount, amount, DRIVE_SPEED);
+        }
     }
 
     public void TurnTo(double target) {

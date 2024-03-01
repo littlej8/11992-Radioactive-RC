@@ -15,6 +15,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
     private TeamPropSensors sensors;
 
     public static boolean PIDSmoothing = false;
+    public static long FarWaitTime = 0;
 
     private boolean FarSide;
     private boolean Red;
@@ -46,7 +47,6 @@ public abstract class SplitAutonomous extends LinearOpMode {
         // go up to team prop
         drive.DriveForward(MoveUp, PIDSmoothing);
         sleep(500);
-        drive.TurnTo(0);
 
         // check color sensors for where team prop is
         String side = sensors.CheckSensors();
@@ -95,7 +95,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
         if (!FarSide) {
             sleep(500);
         } else {
-            sleep(10000);
+            sleep(FarWaitTime);
         }
 
         // move up to board
@@ -124,10 +124,11 @@ public abstract class SplitAutonomous extends LinearOpMode {
 
         // drop pixel
         claw.DropClaw();
-        sleep(500);
+        sleep(2000);
 
         // retract arm
         claw.PullArmIn();
+        sleep(2000);
     }
 
     public void init_vars(boolean far_side, double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe) {

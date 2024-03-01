@@ -37,7 +37,9 @@ public class SplitTeleOp extends LinearOpMode {
     }
 
     public void UpdateTelemetry() {
-        telemetry.addData("Driver Left Controller: ", String.format(Locale.getDefault(), "(%f,%f) (%f,%f)", -gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.right_stick_y));
+        telemetry.addData("Driver Controller: ", String.format(Locale.getDefault(), "(%f,%f) (%f,%f)", -gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.right_stick_y));
+        telemetry.addData("Operator Controller: ", String.format(Locale.getDefault(), "(%f,%f) (%f,%f)", -gamepad2.left_stick_x, -gamepad2.left_stick_y, -gamepad2.right_stick_x, -gamepad2.right_stick_y));
+        telemetry.update();
     }
 
     public void initialize() {

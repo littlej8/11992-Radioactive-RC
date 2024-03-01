@@ -51,7 +51,7 @@ public class Environment {
             public static double FRONT_ADJUST_1 = -50;
             public static double FRONT_ADJUST_2 = 25;
 
-            public static double MOVE_BACK_STRAIGHT = 225;
+            public static double MOVE_BACK_STRAIGHT = 250;
             public static double MOVE_BACK_RIGHT = 375;
             public static double MOVE_BACK_LEFT = 375;
 
