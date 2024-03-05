@@ -121,9 +121,9 @@ public abstract class SplitAutonomous extends LinearOpMode {
 
         // line up with board
         if (Red) {
-            drive.DriveLeft(strafe_amount / 2, PIDSmoothing);
+            drive.DriveLeft(strafe_amount, PIDSmoothing);
         } else {
-            drive.DriveRight(strafe_amount / 2, PIDSmoothing);
+            drive.DriveRight(strafe_amount, PIDSmoothing);
         }
         sleep(MovePause);
 
