@@ -44,14 +44,14 @@ public class Environment {
 
         @Config
         public static class MovementCounts {
-            public static double MOVE_UP = 320;
+            public static double MOVE_UP = 335;
 
             public static double LEFT_ADJUST = 0.0;
             public static double RIGHT_ADJUST = 0.0;
             public static double FRONT_ADJUST_1 = -50;
             public static double FRONT_ADJUST_2 = 25;
 
-            public static double MOVE_BACK_STRAIGHT = 250;
+            public static double MOVE_BACK_STRAIGHT = 265;
             public static double MOVE_BACK_RIGHT = 375;
             public static double MOVE_BACK_LEFT = 375;
 
@@ -62,7 +62,7 @@ public class Environment {
 
             public static double PARK_MIDDLE_CLOSE_STRAIGHT = 300;
             public static double PARK_MIDDLE_CLOSE_STRAFE = 325;
-            public static double PARK_MIDDLE_FAR_STRAIGHT = 1000;
+            public static double PARK_MIDDLE_FAR_STRAIGHT = 1100;
             public static double PARK_MIDDLE_FAR_STRAFE = 1150;
 
             public static double PARK_MIDDLE_2_STRAIGHT = 575;

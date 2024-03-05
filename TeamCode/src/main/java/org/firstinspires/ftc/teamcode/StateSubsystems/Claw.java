@@ -13,7 +13,7 @@ public class Claw {
 
     public static double ARM_POWER = 1.0, TELEOP_ARM_SPEED = 2;
     public static double DROP = -0.1, GRIP = 0.1;
-    public static int PULLED_IN = 0, GRABBING = 88;
+    public static int PULLED_IN = -30, GRABBING = 88;
 
     private int current_arm_target = PULLED_IN;
     private boolean claw_gripping = false;
@@ -60,7 +60,9 @@ public class Claw {
 
     public void PullArmIn() {
         current_arm_target = PULLED_IN;
-        periodic();
+        arm.setTargetPosition(current_arm_target);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(-ARM_POWER);
     }
 
     public void MoveArmToGrab() {

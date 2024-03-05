@@ -8,7 +8,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class TeamPropSensors {
     private final ColorRangeSensor left, right;
 
-    public static double LIGHT_SENSITIVITY = 30, LEFT_BOUND = 145, RIGHT_BOUND = 170;
+    public static double LIGHT_SENSITIVITY = 30, LEFT_BOUND = 145, RIGHT_BOUND = 160;
 
     public TeamPropSensors(HardwareMap hwMap) {
         left = hwMap.get(ColorRangeSensor.class, "Left Sensor");

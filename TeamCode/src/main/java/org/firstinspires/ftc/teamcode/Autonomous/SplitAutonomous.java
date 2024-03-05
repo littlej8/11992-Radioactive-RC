@@ -20,9 +20,9 @@ public abstract class SplitAutonomous extends LinearOpMode {
     public static long ArmPause = 1000;
     public static long MovePause = 250;
 
-    public static int Drop1 = 320;
+    public static int Drop1 = 305;
     public static int Drop2 = 360;
-    public static int Drop3 = 400;
+    public static int Drop3 = 425;
 
     private boolean FarSide;
     private boolean Red;
@@ -82,8 +82,9 @@ public abstract class SplitAutonomous extends LinearOpMode {
 
         // drop pixel and push onto line
         trap.Open();
-        drive.DriveForward(25, PIDSmoothing);
-        drive.DriveBackward(25, PIDSmoothing);
+        drive.DriveForward(35, PIDSmoothing);
+        sleep(100);
+        drive.DriveBackward(35, PIDSmoothing);
         sleep(MovePause);
 
         // close trap turn back straight
@@ -106,7 +107,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
         }
 
         // move up to board
-        drive.DriveForward(-ParkMove1Straight, PIDSmoothing);
+        drive.DriveForward((Red) ? ParkMove1Straight : -ParkMove1Straight, PIDSmoothing);
         sleep(MovePause);
 
         int strafe_amount = Drop1;
@@ -132,20 +133,21 @@ public abstract class SplitAutonomous extends LinearOpMode {
         sleep(MovePause);
 
         // move really slow to not ram board
-        drive.DriveForward(150, 0.05);
+        drive.DriveForward(200, 0.05);
         sleep(MovePause);
 
         // put arm on board
         claw.MoveArmToGrab();
-        sleep(MovePause);
+        sleep(ArmPause);
 
         // drop pixel
         claw.DropClaw();
         sleep(ArmPause);
+        claw.StopClaw();
 
         // retract arm
         claw.PullArmIn();
-        sleep(ArmPause);
+        sleep(ArmPause * 4);
     }
 
     public void init_vars(boolean far_side, double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe) {
