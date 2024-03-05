@@ -16,6 +16,13 @@ public abstract class SplitAutonomous extends LinearOpMode {
 
     public static boolean PIDSmoothing = false;
     public static long FarWaitTime = 0;
+    public static long PropPause = 1000;
+    public static long ArmPause = 1000;
+    public static long MovePause = 250;
+
+    public static int Drop1 = 320;
+    public static int Drop2 = 360;
+    public static int Drop3 = 400;
 
     private boolean FarSide;
     private boolean Red;
@@ -46,89 +53,99 @@ public abstract class SplitAutonomous extends LinearOpMode {
 
         // go up to team prop
         drive.DriveForward(MoveUp, PIDSmoothing);
-        sleep(500);
+        sleep(MovePause);
 
         // check color sensors for where team prop is
         String side = sensors.CheckSensors();
         telemetry.addData("Side: ", side);
         telemetry.update();
-        sleep(1000);
+        sleep(PropPause);
         
         // turn to pixel and adjust
         if (side.equals("left")) {
             drive.TurnTo(90);
-            sleep(500);
+            sleep(MovePause);
 
             drive.DriveForward(LeftAdjust, PIDSmoothing);
         } else if (side.equals("right")) {
             drive.TurnTo(-90);
-            sleep(500);
+            sleep(MovePause);
 
             drive.DriveForward(RightAdjust, PIDSmoothing);
         } else {
             drive.DriveLeft(FrontAdjust1, PIDSmoothing);
-            sleep(500);
+            sleep(MovePause);
 
             drive.DriveBackward(FrontAdjust2, PIDSmoothing);
         }
-        sleep(500);
+        sleep(MovePause);
 
         // drop pixel and push onto line
         trap.Open();
         drive.DriveForward(25, PIDSmoothing);
         drive.DriveBackward(25, PIDSmoothing);
-        sleep(1000);
+        sleep(MovePause);
 
         // close trap turn back straight
         trap.Close();
         drive.TurnTo(0);
-        sleep(500);
+        sleep(MovePause);
 
         // go back
         drive.DriveBackward(MoveBackStraight, PIDSmoothing);
-        sleep(500);
+        sleep(MovePause);
 
         // turn to face board
         drive.TurnTo((Red) ? -90 : 90);
 
         // wait for alliance partner if far side
         if (!FarSide) {
-            sleep(500);
+            sleep(MovePause);
         } else {
             sleep(FarWaitTime);
         }
 
         // move up to board
         drive.DriveForward(-ParkMove1Straight, PIDSmoothing);
-        sleep(500);
+        sleep(MovePause);
+
+        int strafe_amount = Drop1;
+
+        if (side.equals("left")) {
+            strafe_amount = (Red) ? Drop3 : Drop1;
+        } else if (side.equals("right")) {
+            strafe_amount = (Red) ? Drop1 : Drop3;
+        } else {
+            strafe_amount = Drop2;
+        }
 
         // line up with board
         if (Red) {
-            drive.DriveLeft(ParkMove2Strafe / 2, PIDSmoothing);
+            drive.DriveLeft(strafe_amount / 2, PIDSmoothing);
         } else {
-            drive.DriveRight(ParkMove2Strafe / 2, PIDSmoothing);
+            drive.DriveRight(strafe_amount / 2, PIDSmoothing);
         }
-        sleep(500);
+        sleep(MovePause);
 
         // make sure still turned correctly
         drive.TurnTo((Red) ? -90 : 90); 
-        sleep(500);
+        sleep(MovePause);
 
         // move really slow to not ram board
         drive.DriveForward(150, 0.05);
-        sleep(500);
+        sleep(MovePause);
 
         // put arm on board
         claw.MoveArmToGrab();
-        sleep(500);
+        sleep(MovePause);
 
         // drop pixel
         claw.DropClaw();
-        sleep(2000);
+        sleep(ArmPause);
 
         // retract arm
         claw.PullArmIn();
-        sleep(2000);
+        sleep(ArmPause);
     }
 
     public void init_vars(boolean far_side, double move_up, double left_adjust, double right_adjust, double front_adjust_1, double front_adjust_2, double move_back_straight, double move_back_left, double move_back_right, double park_move_1_straight, double park_move_1_strafe) {

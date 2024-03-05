@@ -62,7 +62,7 @@ public class Environment {
 
             public static double PARK_MIDDLE_CLOSE_STRAIGHT = 300;
             public static double PARK_MIDDLE_CLOSE_STRAFE = 325;
-            public static double PARK_MIDDLE_FAR_STRAIGHT = 900;
+            public static double PARK_MIDDLE_FAR_STRAIGHT = 1000;
             public static double PARK_MIDDLE_FAR_STRAFE = 1150;
 
             public static double PARK_MIDDLE_2_STRAIGHT = 575;
