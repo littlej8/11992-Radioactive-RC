@@ -219,15 +219,19 @@ public class DriveTrain {
         double br_target = this.br.getCurrentPosition() + br;
 
         TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(power, maxAccel);
+
         ProfiledPIDController fl_controller = new ProfiledPIDController(kP, kI, kD, constraints);
         fl_controller.setGoal(fl_target);
         fl_controller.setTolerance(pid_tolerance);
+
         ProfiledPIDController fr_controller = new ProfiledPIDController(kP, kI, kD, constraints);
         fr_controller.setGoal(fr_target);
         fr_controller.setTolerance(pid_tolerance);
+
         ProfiledPIDController bl_controller = new ProfiledPIDController(kP, kI, kD, constraints);
         bl_controller.setGoal(bl_target);
         bl_controller.setTolerance(pid_tolerance);
+
         ProfiledPIDController br_controller = new ProfiledPIDController(kP, kI, kD, constraints);
         br_controller.setGoal(br_target);
         br_controller.setTolerance(pid_tolerance);
