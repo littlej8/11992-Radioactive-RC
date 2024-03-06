@@ -8,7 +8,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class Trapdoor {
     private final Servo trap;
 
-    public static double OPENED = 1.0, CLOSED = 0.0;
+    public static double OPENED = 1.0, CLOSED = 0.75;
 
     public Trapdoor(HardwareMap hwMap) {
         trap = hwMap.get(Servo.class, "Trapdoor");

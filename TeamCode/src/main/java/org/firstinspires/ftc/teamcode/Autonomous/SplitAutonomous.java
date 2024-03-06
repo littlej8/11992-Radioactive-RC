@@ -18,11 +18,12 @@ public abstract class SplitAutonomous extends LinearOpMode {
     public static long FarWaitTime = 0;
     public static long PropPause = 1000;
     public static long ArmPause = 1000;
-    public static long MovePause = 250;
+    public static long MovePause = 500;
 
-    public static int Drop1 = 305;
-    public static int Drop2 = 360;
-    public static int Drop3 = 425;
+    public static int Drop1 = 330;
+    public static int Drop2 = 430;
+    public static int Drop3 = 530;
+    public static int RedSubtract = 110;
 
     private boolean FarSide;
     private boolean Red;
@@ -81,10 +82,17 @@ public abstract class SplitAutonomous extends LinearOpMode {
         sleep(MovePause);
 
         // drop pixel and push onto line
-        trap.Open();
-        drive.DriveForward(35, PIDSmoothing);
-        sleep(100);
-        drive.DriveBackward(35, PIDSmoothing);
+        if (!side.equals("front")) {
+            drive.DriveForward(35, PIDSmoothing);
+            trap.Open();
+            sleep(250);
+            drive.DriveBackward(35, PIDSmoothing);
+        } else {
+            trap.Open();
+            drive.DriveBackward(35, PIDSmoothing);
+            sleep(250);
+            drive.DriveForward(35, PIDSmoothing);
+        }
         sleep(MovePause);
 
         // close trap turn back straight
@@ -113,11 +121,11 @@ public abstract class SplitAutonomous extends LinearOpMode {
         int strafe_amount = Drop1;
 
         if (side.equals("left")) {
-            strafe_amount = (Red) ? Drop3 : Drop1;
+            strafe_amount = (Red) ? Drop3 - 70 - RedSubtract : Drop1;
         } else if (side.equals("right")) {
-            strafe_amount = (Red) ? Drop1 : Drop3;
+            strafe_amount = (Red) ? Drop1 - 30 - RedSubtract : Drop3;
         } else {
-            strafe_amount = Drop2;
+            strafe_amount = (Red) ? Drop2 - RedSubtract : Drop2;
         }
 
         // line up with board
@@ -133,7 +141,7 @@ public abstract class SplitAutonomous extends LinearOpMode {
         sleep(MovePause);
 
         // move really slow to not ram board
-        drive.DriveForward(200, 0.05);
+        drive.DriveTime(3000, 0.070);
         sleep(MovePause);
 
         // put arm on board

@@ -73,6 +73,19 @@ public class DriveTrain {
         this.br.setPower((turn + (y - x)) * TELEOP_SPEED);
     }
 
+    public void DriveTime(long millis, double power) {
+        fl.setPower(power);
+        fr.setPower(power);
+        bl.setPower(power);
+        br.setPower(power);
+        opMode.sleep(millis);
+
+        fl.setPower(0);
+        fr.setPower(0);
+        bl.setPower(0);
+        br.setPower(0);
+    }
+
     public void DriveForward(double amount) {
         drive(amount, amount, amount, amount, DRIVE_SPEED);
     }

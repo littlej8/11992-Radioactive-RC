@@ -11,7 +11,7 @@ public class AutonomousRedLeft extends SplitAutonomous {
                         Environment.Auto.MovementCounts.MOVE_UP,
                         Environment.Auto.MovementCounts.LEFT_ADJUST,
                         Environment.Auto.MovementCounts.RIGHT_ADJUST,
-                        Environment.Auto.MovementCounts.FRONT_ADJUST_1,
+                        -Environment.Auto.MovementCounts.FRONT_ADJUST_1,
                         Environment.Auto.MovementCounts.FRONT_ADJUST_2,
                         Environment.Auto.MovementCounts.MOVE_BACK_STRAIGHT,
                         Environment.Auto.MovementCounts.MOVE_BACK_LEFT,
